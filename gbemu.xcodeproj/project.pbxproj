@@ -1,0 +1,436 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2D1BA364ED00292B1C /* AppDelegate.swift */; settings = {ASSET_TAGS = (); }; };
+		45773F301BA364ED00292B1C /* ScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2E1BA364ED00292B1C /* ScreenView.swift */; settings = {ASSET_TAGS = (); }; };
+		45773F321BA3650000292B1C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F311BA3650000292B1C /* Window.swift */; settings = {ASSET_TAGS = (); }; };
+		45D9CC411B778DE10035D540 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC401B778DE10035D540 /* Assets.xcassets */; };
+		45D9CC441B778DE10035D540 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC421B778DE10035D540 /* MainMenu.xib */; };
+		45D9CC4F1B778DE10035D540 /* gbemuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC4E1B778DE10035D540 /* gbemuTests.swift */; };
+		45D9CC5A1B778E110035D540 /* CPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC591B778E110035D540 /* CPU.swift */; };
+		45D9CC5C1B778FC60035D540 /* Registers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC5B1B778FC60035D540 /* Registers.swift */; };
+		45D9CC5E1B78CDE30035D540 /* MMU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC5D1B78CDE30035D540 /* MMU.swift */; };
+		45D9CC601B7F7F6C0035D540 /* GPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC5F1B7F7F6C0035D540 /* GPU.swift */; };
+		45D9CC621B7FA3770035D540 /* Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC611B7FA3770035D540 /* Names.swift */; };
+		45F367AF1BA048C4002BF8BB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F367AE1BA048C4002BF8BB /* Joypad.swift */; };
+		45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FACF511BA34F1700576E25 /* Gameboy.swift */; settings = {ASSET_TAGS = (); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		45D9CC4B1B778DE10035D540 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 45D9CC331B778DE10035D540 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 45D9CC3A1B778DE10035D540;
+			remoteInfo = gbemu;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		45773F2D1BA364ED00292B1C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		45773F2E1BA364ED00292B1C /* ScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenView.swift; sourceTree = "<group>"; };
+		45773F311BA3650000292B1C /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
+		45D9CC3B1B778DE10035D540 /* gbemu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gbemu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		45D9CC401B778DE10035D540 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		45D9CC431B778DE10035D540 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		45D9CC451B778DE10035D540 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45D9CC4A1B778DE10035D540 /* gbemuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = gbemuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		45D9CC4E1B778DE10035D540 /* gbemuTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gbemuTests.swift; sourceTree = "<group>"; };
+		45D9CC501B778DE10035D540 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		45D9CC591B778E110035D540 /* CPU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPU.swift; sourceTree = "<group>"; };
+		45D9CC5B1B778FC60035D540 /* Registers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Registers.swift; sourceTree = "<group>"; };
+		45D9CC5D1B78CDE30035D540 /* MMU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMU.swift; sourceTree = "<group>"; };
+		45D9CC5F1B7F7F6C0035D540 /* GPU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPU.swift; sourceTree = "<group>"; };
+		45D9CC611B7FA3770035D540 /* Names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Names.swift; sourceTree = "<group>"; };
+		45F367AE1BA048C4002BF8BB /* Joypad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Joypad.swift; sourceTree = "<group>"; };
+		45FACF511BA34F1700576E25 /* Gameboy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gameboy.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		45D9CC381B778DE10035D540 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		45D9CC471B778DE10035D540 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		45D9CC321B778DE10035D540 = {
+			isa = PBXGroup;
+			children = (
+				45D9CC3D1B778DE10035D540 /* gbemu */,
+				45D9CC4D1B778DE10035D540 /* gbemuTests */,
+				45D9CC3C1B778DE10035D540 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		45D9CC3C1B778DE10035D540 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				45D9CC3B1B778DE10035D540 /* gbemu.app */,
+				45D9CC4A1B778DE10035D540 /* gbemuTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		45D9CC3D1B778DE10035D540 /* gbemu */ = {
+			isa = PBXGroup;
+			children = (
+				45F367B21BA04B61002BF8BB /* emu */,
+				45773F2D1BA364ED00292B1C /* AppDelegate.swift */,
+				45773F311BA3650000292B1C /* Window.swift */,
+				45773F2E1BA364ED00292B1C /* ScreenView.swift */,
+				45D9CC401B778DE10035D540 /* Assets.xcassets */,
+				45D9CC421B778DE10035D540 /* MainMenu.xib */,
+				45D9CC451B778DE10035D540 /* Info.plist */,
+			);
+			path = gbemu;
+			sourceTree = "<group>";
+		};
+		45D9CC4D1B778DE10035D540 /* gbemuTests */ = {
+			isa = PBXGroup;
+			children = (
+				45D9CC4E1B778DE10035D540 /* gbemuTests.swift */,
+				45D9CC501B778DE10035D540 /* Info.plist */,
+			);
+			path = gbemuTests;
+			sourceTree = "<group>";
+		};
+		45F367B21BA04B61002BF8BB /* emu */ = {
+			isa = PBXGroup;
+			children = (
+				45F367AE1BA048C4002BF8BB /* Joypad.swift */,
+				45D9CC591B778E110035D540 /* CPU.swift */,
+				45D9CC611B7FA3770035D540 /* Names.swift */,
+				45D9CC5D1B78CDE30035D540 /* MMU.swift */,
+				45D9CC5F1B7F7F6C0035D540 /* GPU.swift */,
+				45D9CC5B1B778FC60035D540 /* Registers.swift */,
+				45FACF511BA34F1700576E25 /* Gameboy.swift */,
+			);
+			name = emu;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		45D9CC3A1B778DE10035D540 /* gbemu */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45D9CC531B778DE10035D540 /* Build configuration list for PBXNativeTarget "gbemu" */;
+			buildPhases = (
+				45D9CC371B778DE10035D540 /* Sources */,
+				45D9CC381B778DE10035D540 /* Frameworks */,
+				45D9CC391B778DE10035D540 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = gbemu;
+			productName = gbemu;
+			productReference = 45D9CC3B1B778DE10035D540 /* gbemu.app */;
+			productType = "com.apple.product-type.application";
+		};
+		45D9CC491B778DE10035D540 /* gbemuTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45D9CC561B778DE10035D540 /* Build configuration list for PBXNativeTarget "gbemuTests" */;
+			buildPhases = (
+				45D9CC461B778DE10035D540 /* Sources */,
+				45D9CC471B778DE10035D540 /* Frameworks */,
+				45D9CC481B778DE10035D540 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				45D9CC4C1B778DE10035D540 /* PBXTargetDependency */,
+			);
+			name = gbemuTests;
+			productName = gbemuTests;
+			productReference = 45D9CC4A1B778DE10035D540 /* gbemuTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		45D9CC331B778DE10035D540 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Otis Carpay";
+				TargetAttributes = {
+					45D9CC3A1B778DE10035D540 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					45D9CC491B778DE10035D540 = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 45D9CC3A1B778DE10035D540;
+					};
+				};
+			};
+			buildConfigurationList = 45D9CC361B778DE10035D540 /* Build configuration list for PBXProject "gbemu" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 45D9CC321B778DE10035D540;
+			productRefGroup = 45D9CC3C1B778DE10035D540 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				45D9CC3A1B778DE10035D540 /* gbemu */,
+				45D9CC491B778DE10035D540 /* gbemuTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		45D9CC391B778DE10035D540 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45D9CC411B778DE10035D540 /* Assets.xcassets in Resources */,
+				45D9CC441B778DE10035D540 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		45D9CC481B778DE10035D540 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		45D9CC371B778DE10035D540 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */,
+				45773F321BA3650000292B1C /* Window.swift in Sources */,
+				45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */,
+				45D9CC621B7FA3770035D540 /* Names.swift in Sources */,
+				45773F301BA364ED00292B1C /* ScreenView.swift in Sources */,
+				45D9CC5A1B778E110035D540 /* CPU.swift in Sources */,
+				45D9CC5C1B778FC60035D540 /* Registers.swift in Sources */,
+				45D9CC5E1B78CDE30035D540 /* MMU.swift in Sources */,
+				45F367AF1BA048C4002BF8BB /* Joypad.swift in Sources */,
+				45D9CC601B7F7F6C0035D540 /* GPU.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		45D9CC461B778DE10035D540 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45D9CC4F1B778DE10035D540 /* gbemuTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		45D9CC4C1B778DE10035D540 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 45D9CC3A1B778DE10035D540 /* gbemu */;
+			targetProxy = 45D9CC4B1B778DE10035D540 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		45D9CC421B778DE10035D540 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				45D9CC431B778DE10035D540 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		45D9CC511B778DE10035D540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		45D9CC521B778DE10035D540 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		45D9CC541B778DE10035D540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = gbemu/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		45D9CC551B778DE10035D540 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = gbemu/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		45D9CC571B778DE10035D540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = gbemuTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemuTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gbemu.app/Contents/MacOS/gbemu";
+			};
+			name = Debug;
+		};
+		45D9CC581B778DE10035D540 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = gbemuTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemuTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gbemu.app/Contents/MacOS/gbemu";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		45D9CC361B778DE10035D540 /* Build configuration list for PBXProject "gbemu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45D9CC511B778DE10035D540 /* Debug */,
+				45D9CC521B778DE10035D540 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		45D9CC531B778DE10035D540 /* Build configuration list for PBXNativeTarget "gbemu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45D9CC541B778DE10035D540 /* Debug */,
+				45D9CC551B778DE10035D540 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		45D9CC561B778DE10035D540 /* Build configuration list for PBXNativeTarget "gbemuTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				45D9CC571B778DE10035D540 /* Debug */,
+				45D9CC581B778DE10035D540 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 45D9CC331B778DE10035D540 /* Project object */;
+}
