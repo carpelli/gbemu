@@ -71,18 +71,7 @@ struct Registers {
         l = 0x4D
         flags.byte = 0xB0
         
-        pc = 100
+        pc = 0x100
         sp = 0xFFFE
-//        a = 0
-//        b = 0
-//        c = 0
-//        d = 0
-//        e = 0
-//        h = 0
-//        l = 0
-//        flags.byte = 0
-//
-//        pc = 0
-//        sp = 0xFFFE
     }
 }

@@ -8,8 +8,16 @@
 
 import Swift
 
-struct MMU {
-    var isInBios = false //make private
+class MMU {
+    private var isInBios = false
+    
+    struct InterruptFlags {
+        var byte: Byte = 0
+        subscript(index: Byte) -> Bool {
+            get { return 1 << index != 0 }
+            set(value) { byte = value ? byte | 1 << index : byte & ~(1 << index) }
+        }
+    }
     
     private var bios: [Byte] = [
         0x31, 0xFE, 0xFF, 0xAF, 0x21, 0xFF, 0x9F, 0x32, 0xCB, 0x7C, 0x20, 0xFB, 0x21, 0x26, 0xFF, 0x0E,
@@ -29,10 +37,12 @@ struct MMU {
         0x21, 0x04, 0x01, 0x11, 0xA8, 0x00, 0x1A, 0x13, 0xBE, 0x20, 0xFE, 0x23, 0x7D, 0xFE, 0x34, 0x20,
         0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50
     ]
-    private var rom =  [Byte](count: 0x8000, repeatedValue: 0)
-    private var wram = [Byte](count: 0x2000, repeatedValue: 0)
-    private var eram = [Byte](count: 0x2000, repeatedValue: 0)
-    private var zram = [Byte](count: 0x80,   repeatedValue: 0)
+    private var rom =  [Byte](repeating: 0, count: 0x8000)
+    private var wram = [Byte](repeating: 0, count: 0x2000)
+    private var eram = [Byte](repeating: 0, count: 0x2000)
+    private var zram = [Byte](repeating: 0,   count: 0x80)
+    var iEnable = InterruptFlags()
+    var iFlag = InterruptFlags()
     
     let system: Gameboy
     let gpu: GPU
@@ -47,7 +57,7 @@ struct MMU {
         gpu = system.gpu
     }
     
-    func readByte(address: UInt16) -> Byte {
+    func readByte(_ address: UInt16) -> Byte {
         let addressWord = address
         let address = Int(address)
         
@@ -68,8 +78,10 @@ struct MMU {
             case 0xE000 ..< 0xFE00: return wram[address & 0x1FFF]
             case 0xFE00 ..< 0xFEA0: return gpu.oam[address & 0xFF]
             case 0xFEA0 ..< 0xFF00: return 0
+            case 0xFF0F: return iFlag.byte
+            case 0xFFFF: return iEnable.byte
             case 0xFF00 ..< 0xFF80:
-                if case 0xFF40..<0xFF80 = addressWord {
+                if case 0xFF40 ..< 0xFF80 = addressWord {
                     return gpu.readByte(addressWord)
                 } else if addressWord & 0x3F == 0 {
                     return system.joypad.readByte()
@@ -80,11 +92,11 @@ struct MMU {
         }
     }
     
-    func readWord(address: UInt16) -> Word {
+    func readWord(_ address: UInt16) -> Word {
         return Word(readByte(address)) | (Word(readByte(address + 1)) << 8)
     }
     
-    mutating func writeByte(address: UInt16, value: Byte) {
+    func writeByte(_ address: UInt16, value: Byte) {
         let addressWord = address
         let address = Int(address)
         switch (addressWord) {
@@ -99,22 +111,26 @@ struct MMU {
                 
             case 0xE000 ..< 0xFE00: wram[address & 0x1FFF] = value
             case 0xFE00 ..< 0xFEA0: gpu.oam[address & 0xFF] = value
-            case 0xFEA0 ..< 0xFF00: 0
+            case 0xFEA0 ..< 0xFF00: break
+            case 0xFF0F: iFlag.byte = value
+            case 0xFFFF: iEnable.byte = value
             case 0xFF00 ..< 0xFF80:
-                if case 0xFF40..<0xFF80 = addressWord {
+                if case 0xFF40 ..< 0xFF80 = addressWord {
                     gpu.writeByte(addressWord, value: value)
+                } else if addressWord & 0x3F == 0 {
+                    return system.joypad.writeByte(value)
                 }
             default: zram[address & 0x7F] = value //Fixme
         }
     }
     
-    mutating func writeWord(address: UInt16, value: Word) {
+    func writeWord(_ address: UInt16, value: Word) {
         writeByte(address, value: Byte(truncatingBitPattern: value))
         writeByte(address + 1, value: Byte(value >> 8))
     }
     
-    mutating func load(rom: [Byte]) {
-        rom[0x7FFF]
+    func load(_ rom: [Byte]) {
+        //rom[0x7FFF]
         self.rom = rom
     }
 }

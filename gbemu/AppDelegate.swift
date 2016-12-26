@@ -14,20 +14,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: Window!
     @IBOutlet weak var view: ScreenView!
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
-        // Insert code here to initialize your application
-        
-        let data = NSData(contentsOfFile: NSBundle.mainBundle().pathForResource("ttt", ofType: "gb")!)
-        var rom = [Byte](count: 0x8000, repeatedValue: 0)
-        data?.getBytes(&rom, length: 0x8000)
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        // Insert code here to initialize your applicationlet data = try? Data(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: "opus5", ofType: "gb")!))
+        var rom = [Byte](repeating: 0, count: 0x8000)
+        (data as NSData?)?.getBytes(&rom, length: 0x8000)
         
         let gameboy = Gameboy(screen: view, joypadInput: window)
         gameboy.start(withRom: rom)
-        gameboy.gameLoop(500)
-        NSThread.detachNewThreadSelector(Selector("gameLoop:"), toTarget: gameboy, withObject: nil)
+        
+        let queue = OperationQueue()
+        queue.addOperation(gameboy.run)
+//        gameboy.run(times: 1)
+        //Thread.detachNewThreadSelector(Selector("gameLoop:"), toTarget: gameboy, with: nil)
     }
 
-    func applicationWillTerminate(aNotification: NSNotification) {
+    func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
 }

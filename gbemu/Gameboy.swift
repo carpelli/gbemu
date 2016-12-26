@@ -10,7 +10,7 @@ import Cocoa
 
 typealias Byte = UInt8
 typealias Word = UInt16
-extension UnsignedIntegerType {
+extension UnsignedInteger {
     init(_ bool: Bool) {
         self.init(bool ? 1 : 0)
     }
@@ -18,24 +18,26 @@ extension UnsignedIntegerType {
 
 class Gameboy {
     var cpu: CPU!
-    let gpu: GPU
+    var gpu: GPU!
     let joypad: Joypad
     var window: Window!
     
     init(screen: GPUOutputReceiver, joypadInput: JoypadInput) {
-        gpu = GPU(screen: screen)
         joypad = Joypad(input: joypadInput)
-        cpu = CPU(system: self)
+        gpu = GPU(system: self, screen: screen)
+        cpu = CPU(system: self) // Can be better
     }
     
     func start(withRom rom: [Byte]) {
         cpu.mmu.load(rom)
-        cpu.reg.pc = 0x100
     }
     
-    func gameLoop(times: Int) {
-        var i = 0
-        while i++ < times {
+    func run() {
+        cpu.runFrame()
+    }
+    
+    func run(times: Int) {
+        for _ in 1...times {
             cpu.runFrame()
         }
     }

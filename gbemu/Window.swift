@@ -11,35 +11,33 @@ import Cocoa
 class Window: NSWindow, JoypadInput {
     weak var joypad: Joypad?
     
-    override func keyDown(theEvent: NSEvent) {
-        fatalError()
-        
+    override func keyDown(with theEvent: NSEvent) {
         if let button = buttonForCode(theEvent.keyCode) {
             joypad?.buttonDown(button)
         }
     }
     
-    override func keyUp(theEvent: NSEvent) {
+    override func keyUp(with theEvent: NSEvent) {
         if let button = buttonForCode(theEvent.keyCode) {
             joypad?.buttonUp(button)
         }
     }
     
-    private func buttonForCode(keyCode: UInt16) -> Joypad.Button? {
+    private func buttonForCode(_ keyCode: UInt16) -> Joypad.Button? {
         switch keyCode {
-            case   7: return .A
-            case   6: return .B
-            case  49: return .Select
-            case  36: return .Start
-            case 124: return .Right
-            case 123: return .Left
-            case 126: return .Up
-            case 125: return .Down
+            case   7: return .a
+            case   6: return .b
+            case  49: return .select
+            case  36: return .start
+            case 124: return .right
+            case 123: return .left
+            case 126: return .up
+            case 125: return .down
             default:  return nil
         }
     }
     
-    func connectToJoypad(joypad: Joypad) {
+    func connectToJoypad(_ joypad: Joypad) {
         self.joypad = joypad
     }
 }

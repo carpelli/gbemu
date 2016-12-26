@@ -10,12 +10,14 @@ import Foundation
 
 var opsPerformed = 0
 
-struct CPU {
+final class CPU {
     var clock = (t: 0, m: 0)
     var cycle = (t: 0, _x: 0)
     var reg = Registers()
     var mmu: MMU
     var enableInterrupts = true
+    
+    var ops = 0
     
     let OPTIMES = [
          4, 12,  8,  8,  4,  4,  8,  4, 20,  8,  8,  8,  4,  4,  8,  4,
@@ -40,53 +42,83 @@ struct CPU {
         mmu = MMU(system: system)
     }
     
-    private mutating func fetchByte() -> Byte {
+    private func fetchByte() -> Byte {
         let value = mmu.readByte(reg.pc)
         reg.pc += 1
         return value
     }
     
-    private mutating func fetchWord() -> Word {
+    private func fetchWord() -> Word {
         let value = mmu.readWord(reg.pc)
         reg.pc += 2
         return value
     }
     
-    mutating func runFrame() {
+    func runFrame() {
         clock = (0, 0)
-        while clock.t < 70224 {
+//        while clock.t < 70224 {
+        while true {
+            let oldPC = reg.pc
+            ops += 1
             
             call()
-            ++opsPerformed
+            opsPerformed += 1
             clock.m += cycle.t/4
             clock.t += cycle.t
             mmu.gpu.step(cycle.t)
             
-            NOP()
+            handleInterrupt()
+            
+//            printDebug(oldPC)
         }
     }
     
-    func printDebug(oldPC: Word) {
+    private func handleInterrupt() {
+        let iEnable = mmu.iEnable
+        let iFlag = mmu.iFlag
+        if !enableInterrupts { return }
+        
+        let triggered = iEnable.byte & iFlag.byte
+        if triggered == 0 { return }
+        
+        enableInterrupts = false
+        mmu.iFlag.byte &= ~triggered
+        PUSH(reg.pc)
+        switch (triggered) {
+            case 0b00000001: reg.pc = 0x40
+            case 0b00000010: reg.pc = 0x48
+            case 0b00000100: reg.pc = 0x50
+            case 0b00001000: reg.pc = 0x58
+            case 0b00010000: reg.pc = 0x60
+            default: fatalError()
+        }
+        clock.m += 3
+        clock.t += 12
+    }
+    
+    private func printDebug(_ oldPC: Word) {
         var pcAtOp = oldPC
         let opCode = mmu.readByte(pcAtOp)
-        var string: String = String(format: "%4X", pcAtOp) + " "
+        var string: String = String(format: "%4X", ops) + " " +
+            String(format: "%4X", pcAtOp) + " "
+        string += String(format: "%3X", opCode) + " "
         
         if opCode == 0xCB {
-            ++pcAtOp
-            string += OPNAMES_CB[Int(mmu.readByte(pcAtOp))].stringByPaddingToLength(11, withString: " ", startingAtIndex: 0)
+            pcAtOp += 1
+            string += OPNAMES_CB[Int(mmu.readByte(pcAtOp))].padding(toLength: 11, withPad: " ", startingAt: 0)
         } else {
-            string += OPNAMES[Int(opCode)].stringByPaddingToLength(11, withString: " ", startingAtIndex: 0)
+            string += OPNAMES[Int(opCode)].padding(toLength: 11, withPad: " ", startingAt: 0)
         }
         
         
         if reg.pc > pcAtOp {
-            if reg.pc - pcAtOp > 2 {
+            if (reg.pc - pcAtOp) > Word(2) {
                 string += String(format: " %02X", mmu.readByte(pcAtOp + 2))
             } else {
                 string += "   "
             }
             
-            if reg.pc - pcAtOp > 1 {
+            if (reg.pc - pcAtOp) > Word(1) {
                 string += String(format: " %02X", mmu.readByte(pcAtOp + 1))
             } else {
                 string += "   "
@@ -95,12 +127,13 @@ struct CPU {
             string += "     "
         }
         
-        //string += "   " + String(mmu.gpu.modeClock)
+        string += "  " + String(format: "%01X %02X %02X %02X %01X  ", reg.a, reg.bc, reg.de, reg.hl, reg.flags.byte)
+        string += String(mmu.readByte(0xff44)) + " " + String(mmu.gpu.modeClock)
         
         print(string)
     }
     
-    mutating func call() {
+    private func call() {
         let opcode = fetchByte()
         
         //Conditional commands will add time if condition is true
@@ -383,7 +416,7 @@ struct CPU {
         }
     }
     
-    mutating func call_CB() {
+    private func call_CB() {
         let opcode = fetchByte()
         
         cycle.t = (opcode | 0b111 == 0b110) ? 8 : 16
@@ -665,17 +698,17 @@ struct CPU {
         }
     }
     
-    func NOP() {}
+   private func NOP() {}
     
-    func __() {
+   private func __() {
         fatalError("Undefined instruction")
     }
     
-    func HALT() {
+   private func HALT() {
         fatalError()
     }
     
-    func STOP() {
+   private func STOP() {
         fatalError()
     }
     
@@ -684,98 +717,98 @@ struct CPU {
     -------------------*/
     
     ///Loads nn into register
-    mutating func LD(inout rr: Word) {
+    private func LD(_ rr: inout Word) {
         rr = fetchWord()
         
     }
     
     ///Loads n into register
-    mutating func LD(inout r: Byte) {
+    private func LD(_ r: inout Byte) {
         r = fetchByte()
     }
     
     ///Loads n into (register)
-    mutating func LD(rr: UInt16) {
+    private func LD(_ rr: UInt16) {
         mmu.writeByte(rr, value: fetchByte())
     }
     
     ///Loads byte into (register)
-    mutating func LD(dd: UInt16, _ r: Byte) {
+    private func LD(_ dd: UInt16, _ r: Byte) {
         mmu.writeByte(dd, value: r)
     }
     
     ///Loads (register) into register
-    mutating func LD(inout r: Byte, _ dd: UInt16) {
+    private func LD(_ r: inout Byte, _ dd: UInt16) {
         r = mmu.readByte(dd)
     }
     
     ///Loads register into register
-    mutating func LD(inout r1: Byte, _ r2: Byte) {
+    private func LD(_ r1: inout Byte, _ r2: Byte) {
         r1 = r2
     }
     
     ///Loads register into (nn)
-    mutating func LD_nn(r: Byte) {
+    private func LD_nn(_ r: Byte) {
         mmu.writeByte(fetchWord(), value: r)
     }
     
     ///Loads sp into (nn)
-    mutating func LD_nn_SP() {
+    private func LD_nn_SP() {
         mmu.writeWord(fetchWord(), value: reg.sp)
     }
     
     ///Loads (nn) into register
-    mutating func LD_A_nn() {
+    private func LD_A_nn() {
         reg.a = mmu.readByte(fetchWord())
     }
     
     ///Loads ($FF00 + c) into a
-    mutating func LD_A_C() {
+    private func LD_A_C() {
         LD(0xFF00 | Word(reg.c), reg.a)
     }
     
     ///Loads a into ($FF00 + c)
-    mutating func LD_C_A() {
+    private func LD_C_A() {
         LD(&reg.a, 0xFF00 | Word(reg.c))
     }
     
     ///Loads a into (hl), increases hl
-    mutating func LDI_HL_A() {
+    private func LDI_HL_A() {
         LD(reg.hl, reg.a)
         reg.hl += 1
     }
     
     ///Loads a into (hl), decreases hl
-    mutating func LDD_HL_A() {
+    private func LDD_HL_A() {
         LD(reg.hl, reg.a)
         reg.hl -= 1
     }
     
     ///Loads (hl) into a, increases hl
-    mutating func LDI_A_HL() {
+    private func LDI_A_HL() {
         LD(&reg.a, reg.hl)
         reg.hl += 1
     }
     
     ///Loads (hl) into a, decreases hl
-    mutating func LDD_A_HL() {
+    private func LDD_A_HL() {
         LD(&reg.a, reg.hl)
         reg.hl -= 1
     }
     
-    mutating func LDH_n_A() {
+    private func LDH_n_A() {
         LD(0xFF00 | Word(fetchByte()), reg.a)
     }
     
-    mutating func LDH_A_n() {
+    private func LDH_A_n() {
         LD(&reg.a, 0xFF00 | Word(fetchByte()))
     }
     
-    mutating func LD_SP_HL() {
+    private func LD_SP_HL() {
         reg.sp = reg.hl
     }
     
-    mutating func LD_HL_SPe() {
+    private func LD_HL_SPe() {
         let e = Int32(Int8(bitPattern: fetchByte()))
         let sp = Int32(reg.sp)
         
@@ -787,12 +820,12 @@ struct CPU {
         reg.flags.C = (sp & 0x00FF) + (e & 0x00FF) > 0x00FF
     }
     
-    mutating func PUSH(rr: Word) {
+    private func PUSH(_ rr: Word) {
         reg.sp = reg.sp &- 2
         mmu.writeWord(reg.sp, value: rr)
     }
     
-    mutating func POP(inout rr: Word) {
+    private func POP(_ rr: inout Word) {
         rr = mmu.readWord(reg.sp)
         reg.sp = reg.sp &+ 2
     }
@@ -802,7 +835,7 @@ struct CPU {
     ------------------*/
     
     ///Adds value to a
-    mutating func ADD_A(b: Byte) {
+    private func ADD_A(_ b: Byte) {
         let a = reg.a
         let r = a &+ b
         
@@ -814,7 +847,7 @@ struct CPU {
     }
     
     ///Adds value and C to a
-    mutating func ADC_A(b: Byte) {
+    private func ADC_A(_ b: Byte) {
         let a = reg.a
         let c = Byte(reg.flags.C)
         let r = a &+ b &+ c
@@ -827,7 +860,7 @@ struct CPU {
     }
     
     ///Subtracts value from a
-    mutating func SUB_A(b: Byte) {
+    private func SUB_A(_ b: Byte) {
         let a = reg.a
         let r = a &- b
         
@@ -839,7 +872,7 @@ struct CPU {
     }
     
     ///Subtracts value and C from a
-    mutating func SBC_A(b: Byte) {
+    private func SBC_A(_ b: Byte) {
         let a = reg.a
         let c = Byte(reg.flags.C)
         let r = a &- b &- c
@@ -852,7 +885,7 @@ struct CPU {
     }
     
     ///a = a & value
-    mutating func AND_A(b: Byte) {
+    private func AND_A(_ b: Byte) {
         let r = reg.a & b
         
         reg.flags.Z = r == 0
@@ -863,7 +896,7 @@ struct CPU {
     }
     
     ///a = a | value
-    mutating func OR_A(b: Byte) {
+    private func OR_A(_ b: Byte) {
         let r = reg.a | b
         
         reg.flags.Z = r == 0
@@ -874,7 +907,7 @@ struct CPU {
     }
     
     ///a = a ^ value
-    mutating func XOR_A(b: Byte) {
+    private func XOR_A(_ b: Byte) {
         let r = reg.a ^ b
         
         reg.flags.Z = r == 0
@@ -885,7 +918,7 @@ struct CPU {
     }
     
     ///Update flags as if subtracted value from a
-    mutating func CP_A(b: Byte) {
+    private func CP_A(_ b: Byte) {
         let a = reg.a
         SUB_A(b)
         
@@ -893,7 +926,7 @@ struct CPU {
     }
     
     ///Increase register by 1
-    mutating func INC(inout b: Byte) {
+    private func INC(_ b: inout Byte) {
         let r = b &+ 1
         
         reg.flags.Z = r == 0
@@ -903,12 +936,12 @@ struct CPU {
     }
     
     ///Increase register by 1
-    mutating func INC(inout ss: Word) {
+    private func INC(_ ss: inout Word) {
         ss = ss &+ 1
     }
     
     ///Decrease register by 1
-    mutating func DEC(inout b: Byte) {
+    private func DEC(_ b: inout Byte) {
         let r = b &- 1
         
         reg.flags.Z = r == 0
@@ -918,44 +951,44 @@ struct CPU {
     }
     
     ///Decrease register by 1
-    mutating func DEC(inout ss: Word) {
+    private func DEC(_ ss: inout Word) {
         ss = ss &- 1
     }
     
-    mutating func ADD_A_HL() {
+    private func ADD_A_HL() {
         ADD_A(mmu.readByte(reg.hl))
     }
     
-    mutating func ADC_A_HL() {
+    private func ADC_A_HL() {
         ADC_A(mmu.readByte(reg.hl))
     }
     
-    mutating func SUB_A_HL() {
+    private func SUB_A_HL() {
         SUB_A(mmu.readByte(reg.hl))
     }
     
-    mutating func SBC_A_HL() {
+    private func SBC_A_HL() {
         SBC_A(mmu.readByte(reg.hl))
     }
     
-    mutating func AND_A_HL() {
+    private func AND_A_HL() {
         AND_A(mmu.readByte(reg.hl))
     }
     
-    mutating func OR_A_HL() {
+    private func OR_A_HL() {
         OR_A(mmu.readByte(reg.hl))
     }
     
-    mutating func XOR_A_HL() {
+    private func XOR_A_HL() {
         XOR_A(mmu.readByte(reg.hl))
     }
     
-    mutating func CP_A_HL() {
+    private func CP_A_HL() {
         CP_A(mmu.readByte(reg.hl))
     }
     
     ///Increase (hl) by 1
-    mutating func INC_HL() {
+    private func INC_HL() {
         let r = mmu.readByte(reg.hl) &+ 1
         
         reg.flags.Z = r == 0
@@ -966,7 +999,7 @@ struct CPU {
     }
     
     ///Decrease (hl) by 1
-    mutating func DEC_HL() {
+    private func DEC_HL() {
         let r = mmu.readByte(reg.hl) &- 1
         
         reg.flags.Z = r == 0
@@ -975,40 +1008,40 @@ struct CPU {
         mmu.writeByte(reg.hl, value: r)
     }
     
-    mutating func ADD_A_n() {
+    private func ADD_A_n() {
         ADD_A(fetchByte())
     }
     
-    mutating func ADC_A_n() {
+    private func ADC_A_n() {
         ADC_A(fetchByte())
     }
     
-    mutating func SUB_A_n() {
+    private func SUB_A_n() {
         SUB_A(fetchByte())
     }
     
-    mutating func SBC_A_n() {
+    private func SBC_A_n() {
         SBC_A(fetchByte())
     }
     
-    mutating func AND_A_n() {
+    private func AND_A_n() {
         AND_A(fetchByte())
     }
     
-    mutating func OR_A_n() {
+    private func OR_A_n() {
         OR_A(fetchByte())
     }
     
-    mutating func XOR_A_n() {
+    private func XOR_A_n() {
         XOR_A(fetchByte())
     }
     
-    mutating func CP_A_n() {
+    private func CP_A_n() {
         CP_A(fetchByte())
     }
     
     ///Add value to hl
-    mutating func ADD_HL(ss: Word) {
+    private func ADD_HL(_ ss: Word) {
         let hl = reg.hl
         let r = hl &+ ss
         
@@ -1019,7 +1052,7 @@ struct CPU {
     }
     
     ///Add signed n (two's complement) to sp
-    mutating func ADD_SP() {
+    private func ADD_SP() {
         let e = Int32(Int8(bitPattern: fetchByte()))
         let sp = Int32(reg.sp)
         
@@ -1035,7 +1068,7 @@ struct CPU {
     ---------------------*/
     
     ///Rotate left
-    mutating func RLC(inout s: Byte) {
+    private func RLC(_ s: inout Byte) {
         let c = (s & 0x80) == 0x80
         s = (s << 1) | (c ? 1 : 0)
         
@@ -1045,14 +1078,14 @@ struct CPU {
         reg.flags.C = c
     }
     
-    mutating func RLC(rr: Word) {
+    private func RLC(_ rr: Word) {
         var s = mmu.readByte(rr)
         RLC(&s)
         mmu.writeByte(rr, value: s)
     }
     
     ///Rotate left through carry
-    mutating func RL(inout s: Byte) {
+    private func RL(_ s: inout Byte) {
         let c = (s & 0x80) == 0x80
         s = (s << 1) | (reg.flags.C ? 1 : 0)
         
@@ -1062,14 +1095,14 @@ struct CPU {
         reg.flags.C = c
     }
     
-    mutating func RL(rr: Word) {
+    private func RL(_ rr: Word) {
         var s = mmu.readByte(rr)
         RL(&s)
         mmu.writeByte(rr, value: s)
     }
     
     ///Rotate right
-    mutating func RRC(inout s: Byte) {
+    private func RRC(_ s: inout Byte) {
         let c = (s & 0x01) == 0x01
         s = (s >> 1) | (c ? 0x80 : 0)
         
@@ -1079,14 +1112,14 @@ struct CPU {
         reg.flags.C = c
     }
     
-    mutating func RRC(rr: Word) {
+    private func RRC(_ rr: Word) {
         var s = mmu.readByte(rr)
         RRC(&s)
         mmu.writeByte(rr, value: s)
     }
     
     ///Rotate right through carry
-    mutating func RR(inout s: Byte) {
+    private func RR(_ s: inout Byte) {
         let c = (s & 0x01) == 0x01
         s = (s >> 1) | (reg.flags.C ? 0x80 : 0)
         
@@ -1096,28 +1129,28 @@ struct CPU {
         reg.flags.C = c
     }
     
-    mutating func RR(rr: Word) {
+    private func RR(_ rr: Word) {
         var s = mmu.readByte(rr)
         RR(&s)
         mmu.writeByte(rr, value: s)
     }
     
-    mutating func RLCA() {
+    private func RLCA() {
         RLC(&reg.a)
         reg.flags.Z = false
     }
     
-    mutating func RLA() {
+    private func RLA() {
         RL(&reg.a)
         reg.flags.Z = false
     }
     
-    mutating func RRCA() {
+    private func RRCA() {
         RRC(&reg.a)
         reg.flags.Z = false
     }
     
-    mutating func RRA() {
+    private func RRA() {
         RR(&reg.a)
         reg.flags.Z = false
     }
@@ -1126,37 +1159,37 @@ struct CPU {
         SHIFT COMMANDS
     --------------------*/
     
-    mutating func SLA(inout s: Byte) {
+    private func SLA(_ s: inout Byte) {
         reg.flags.C = s & 0x80 == 0x80
         s = s << 1
         reg.flags.Z = s == 0
     }
     
-    mutating func SLA(rr: Word) {
+    private func SLA(_ rr: Word) {
         var s = mmu.readByte(rr)
         SLA(&s)
         mmu.writeByte(rr, value: s)
     }
     
-    mutating func SRA(inout s: Byte) {
+    private func SRA(_ s: inout Byte) {
         reg.flags.C = s & 1 == 1
         s = (s >> 1) | (s & 0x80)
         reg.flags.Z = s == 0
     }
     
-    mutating func SRA(rr: Word) {
+    private func SRA(_ rr: Word) {
         var s = mmu.readByte(rr)
         SRA(&s)
         mmu.writeByte(rr, value: s)
     }
     
-    mutating func SRL(inout s: Byte) {
+    private func SRL(_ s: inout Byte) {
         reg.flags.C = s & 1 == 1
         s = s >> 1
         reg.flags.Z = s == 0
     }
     
-    mutating func SRL(rr: Word) {
+    private func SRL(_ rr: Word) {
         var s = mmu.readByte(rr)
         SRL(&s)
         mmu.writeByte(rr, value: s)
@@ -1167,7 +1200,7 @@ struct CPU {
     ------------------*/
     
     ///Set Z to NOT register at bit
-    mutating func BIT(bit: Byte, _ s: Byte) {
+    private func BIT(_ bit: Byte, _ s: Byte) {
         assert(bit < 8)
         
         reg.flags.Z = s & (1 << bit) == 0
@@ -1175,31 +1208,31 @@ struct CPU {
         reg.flags.H = true
     }
     
-    mutating func BIT(bit: Byte, _ rr: Word) {
+    private func BIT(_ bit: Byte, _ rr: Word) {
         let s = mmu.readByte(rr)
         BIT(bit, s)
         mmu.writeByte(rr, value: s)
     }
     
     ///Set register at bit
-    mutating func SET(bit: Byte, inout _ s: Byte) {
+    private func SET(_ bit: Byte, _ s: inout Byte) {
         assert(bit < 8)
         s = s | (1 << bit)
     }
     
-    mutating func SET(bit: Byte, _ rr: Word) {
+    private func SET(_ bit: Byte, _ rr: Word) {
         var s = mmu.readByte(rr)
         SET(bit, &s)
         mmu.writeByte(rr, value: s)
     }
     
     ///Reset register at bit
-    mutating func RES(bit: Byte, inout _ s: Byte) {
+    private func RES(_ bit: Byte, _ s: inout Byte) {
         assert(bit < 8)
         s = s & ~(1 << bit)
     }
     
-    mutating func RES(bit: Byte, _ rr: Word) {
+    private func RES(_ bit: Byte, _ rr: Word) {
         var s = mmu.readByte(rr)
         RES(bit, &s)
         mmu.writeByte(rr, value: s)
@@ -1210,17 +1243,17 @@ struct CPU {
     -------------------*/
     
     ///Jump to nn
-    mutating func JP() {
+    private func JP() {
         reg.pc = fetchWord()
     }
     
     ///Jump to (hl)
-    mutating func JP_HL() {
+    private func JP_HL() {
         reg.pc = mmu.readWord(reg.hl)
     }
     
     ///Jump to nn if flag is set
-    mutating func JP(c: Bool) {
+    private func JP(_ c: Bool) {
         if (c) {
             JP()
             cycle.t += 4
@@ -1230,13 +1263,13 @@ struct CPU {
     }
     
     ///Jump by signed n (two's complement)
-    mutating func JR() {
+    private func JR() {
         let e = Int8(bitPattern: fetchByte())
         reg.pc = Word(truncatingBitPattern: Int32(reg.pc) + Int32(e))
     }
     
     ///Jump by signed n if flag is set
-    mutating func JR(c: Bool) {
+    private func JR(_ c: Bool) {
         if (c) {
             JR()
             cycle.t += 4
@@ -1246,13 +1279,13 @@ struct CPU {
     }
     
     ///Call to nn
-    mutating func CALL() {
+    private func CALL() {
         PUSH(reg.pc + 2)
         reg.pc = fetchWord()
     }
     
     ///Call to nn if flag is set
-    mutating func CALL(c: Bool) {
+    private func CALL(_ c: Bool) {
         if (c) {
             CALL()
             cycle.t += 12
@@ -1262,12 +1295,12 @@ struct CPU {
     }
     
     ///Return
-    mutating func RET() {
+    private func RET() {
         POP(&reg.pc)
     }
     
     ///Return if flag is set
-    mutating func RET(c: Bool) {
+    private func RET(_ c: Bool) {
         if (c) {
             RET()
             cycle.t += 12
@@ -1275,13 +1308,13 @@ struct CPU {
     }
     
     ///Return and enable interrupts
-    mutating func RETI() {
+    private func RETI() {
         RET()
         EI()
     }
     
     ///Call to set value
-    mutating func RST(val: Word) {
+    private func RST(_ val: Word) {
         PUSH(reg.pc)
         reg.pc = val
     }
@@ -1290,7 +1323,7 @@ struct CPU {
         MISC COMMANDS
     -------------------*/
     
-    mutating func SWAP(inout s: Byte) {
+    private func SWAP(_ s: inout Byte) {
         s = (s << 4) | (s >> 4)
         reg.flags.Z = s == 0
         reg.flags.N = false
@@ -1298,13 +1331,13 @@ struct CPU {
         reg.flags.C = false
     }
     
-    mutating func SWAP(rr: Word) {
+    private func SWAP(_ rr: Word) {
         var s = mmu.readByte(rr)
         SWAP(&s)
         mmu.writeByte(rr, value: s)
     }
     
-    mutating func DAA() {
+    private func DAA() {
         var adjust: Byte = reg.flags.C ? 0x60 : 0x00
         if reg.flags.H {
             adjust |= 0x06
@@ -1322,30 +1355,30 @@ struct CPU {
         reg.flags.C = adjust > 0x60
     }
     
-    mutating func CPL() {
+    private func CPL() {
         reg.a = ~reg.a
         reg.flags.N = true
         reg.flags.H = true
     }
     
-    mutating func CCF() {
+    private func CCF() {
         reg.flags.N = false
         reg.flags.H = false
         reg.flags.C = !reg.flags.C
     }
     
     
-    mutating func SCF() {
+    private func SCF() {
         reg.flags.N = false
         reg.flags.H = false
         reg.flags.C = true
     }
     
-    mutating func EI() {
+    private func EI() {
         enableInterrupts = true
     }
     
-    mutating func DI() {
+    private func DI() {
         enableInterrupts = false
     }
 }

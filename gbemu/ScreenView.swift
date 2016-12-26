@@ -8,32 +8,36 @@
 
 import AppKit
 
-struct RGB {
-    var r: Byte
-    var g: Byte
-    var b: Byte
-}
+let bitSize = 4;
 
 @IBDesignable class ScreenView: NSView, GPUOutputReceiver {
-    var image = [Byte](count:Int(160*144*3), repeatedValue: 0)
+    var image = [Byte](repeating: 0, count: Int(160*144*4))
+    var context: CGContext?
     
-    override func drawRect(dirtyRect: NSRect) {
-        let context: CGContext! = NSGraphicsContext.currentContext()?.CGContext
-        let data = NSData(bytes: image, length: image.count * sizeof(RGB))
-        let provider = CGDataProviderCreateWithCFData(data)
-        let colorspace = CGColorSpaceCreateDeviceRGB()
-        let info = CGBitmapInfo.ByteOrderDefault
-        
-        let finalImage = CGImageCreate(160, 144, 8, 24, 3 * 160, colorspace, info, provider, nil, false, .RenderingIntentDefault);
-        
-        CGContextSetInterpolationQuality(context, .None);
-        CGContextSetShouldAntialias(context, false);
-        CGContextScaleCTM(context, 3, 3);
-        
-        CGContextDrawImage(context, CGRect(x: 0, y: 0, width: 160, height: 144), finalImage);
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
     }
     
-    func putImageData(data: [Byte]) {
+    override func draw(_ dirtyRect: NSRect) {
+        context = CGContext(
+            data: UnsafeMutableRawPointer(mutating: image),
+            width: 160,
+            height: 144,
+            bitsPerComponent: 8,
+            bytesPerRow: 4 * 160,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+        )
+        context?.setShouldAntialias(false)
+        
+        if let current = NSGraphicsContext.current()?.cgContext {
+            if let cgImage = context?.makeImage() {
+                current.draw(cgImage, in: CGRect(x: 0, y: 0, width: 160*3, height: 144*3))
+            }
+        }
+    }
+    
+    func putImageData(_ data: [Byte]) {
         image = data
         display()
     }

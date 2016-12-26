@@ -6,30 +6,33 @@
 //  Copyright © 2015 Otis Carpay. All rights reserved.
 //
 
-import Foundation
-
 protocol GPUOutputReceiver {
-    func putImageData(data: [Byte])
+    func putImageData(_ data: [Byte])
 }
 
 class GPU {
     enum Mode: Byte {
-        case HBlank = 0, VBlank, OAM, VRAM
+        case hBlank = 0, vBlank, oam, vram
     }
     
     var tileset =
-    [[[Int]]](count: 256, repeatedValue:
-        [[Int]](count: 8, repeatedValue: [0, 0, 0, 0, 0, 0, 0, 0])
+    [[[Int]]](
+        repeating: [[Int]](
+            repeating: [0, 0, 0, 0, 0, 0, 0, 0],
+            count: 8
+        ),
+        count: 256
     )
 
-    var vram = [Byte](count: 0x2000, repeatedValue: 0)
-    var oam  = [Byte](count: 0xA0,  repeatedValue: 0)
+    var vram = [Byte](repeating: 0, count: 0x2000)
+    var oam  = [Byte](repeating: 0,  count: 0xA0)
     
-    var image = [Byte](count: 160*144*4, repeatedValue: 0)
+    var image = [Byte](repeating: 0, count: 160*144*bitSize)
     let screen: GPUOutputReceiver
+    let system: Gameboy
     
-    private var mode = Mode.HBlank
-    private var modeClock = 0
+    private var mode = Mode.oam
+     var modeClock = 0
     private var totalClock = 0
     private var line: Byte = 0
     private var bgMap = false
@@ -48,60 +51,62 @@ class GPU {
         [255, 255, 255]
     ]
     
-    init(screen: GPUOutputReceiver) {
+    init(system: Gameboy, screen: GPUOutputReceiver) {
+        self.system = system
         self.screen = screen
     }
     
-    func step(t: Int) {
+    func step(_ t: Int) {
         modeClock += t
         totalClock += t
         
         switch mode {
             //OAM read mode, scanline active
-            case .OAM:
+            case .oam:
                 if modeClock > 80 {
                     //Enter scanline mode 3
-                    modeClock = 0
-                    mode = .VRAM
+                    modeClock -= 80
+                    mode = .vram
                 }
             //VRAM read mode, scanline active
-            case .VRAM:
+            case .vram:
                 if modeClock > 172 {
                     //Enter hblank
-                    modeClock = 0
-                    mode = .HBlank
+                    modeClock -= 172
+                    mode = .hBlank
                     
                     //Write scanline to buffer
                     renderScan()
                 }
             //hblank, after last hblank, push screen to bitmap
-            case .HBlank:
+            case .hBlank:
                 if modeClock > 204 {
-                    modeClock = 0
-                    ++line
+                    modeClock -= 204
+                    line += 1
                     
                     if line == 144 {
                         screen.putImageData(image)
-                        mode = .VBlank
+                        mode = .vBlank
+                        system.cpu.mmu.iFlag[0] = true
                     } else {
-                        mode = .OAM
+                        mode = .oam
                     }
                 }
             //vblank
-            case .VBlank:
+            case .vBlank:
                 if modeClock > 456 {
-                    modeClock = 0
-                    ++line
+                    modeClock -= 456
+                    line += 1
                     
                     if line == 154 {
-                        mode = .OAM
+                        mode = .oam
                         line = 0
                     }
                 }
         }
     }
     
-    func readByte(address: Word) -> Byte {
+    func readByte(_ address: Word) -> Byte {
         switch(address)
         {
             // LCD Control
@@ -136,7 +141,7 @@ class GPU {
         }
     }
     
-    func writeByte(address: Word, value: Byte) {
+    func writeByte(_ address: Word, value: Byte) {
         switch(address)
         {
             // LCD Control
@@ -172,7 +177,7 @@ class GPU {
                     }
                 }
             
-            default: 0
+            default: break
         }
     }
     
@@ -193,7 +198,7 @@ class GPU {
         var x = scanX & 7
         
         //Where to render on the bitmap
-        var bitmapOffset = Int(line) * 160 * 3
+        var bitmapOffset = Int(line) * 160 * 4
         
         //Read the tile index from the background map
         var colour: [Byte]
@@ -214,10 +219,10 @@ class GPU {
             image[bitmapOffset + 1] = colour[1]
             image[bitmapOffset + 2] = colour[2]
             //screen[bitmapOffset + 3] = colour[3]
-            bitmapOffset += 3
+            bitmapOffset += bitSize
             
             //When this tile ends, read another
-            ++x
+            x += 1
             if x == 8 {
                 x = 0
                 lineOffset = (lineOffset + 1) & 0x1F
@@ -229,7 +234,7 @@ class GPU {
         }
     }
     
-    func updateTile(address: Word, value: Byte) {
+    func updateTile(_ address: Word, value: Byte) {
         guard address & 0x1000 == 0 else {
             return
         }

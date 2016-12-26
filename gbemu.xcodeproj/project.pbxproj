@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2D1BA364ED00292B1C /* AppDelegate.swift */; settings = {ASSET_TAGS = (); }; };
-		45773F301BA364ED00292B1C /* ScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2E1BA364ED00292B1C /* ScreenView.swift */; settings = {ASSET_TAGS = (); }; };
-		45773F321BA3650000292B1C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F311BA3650000292B1C /* Window.swift */; settings = {ASSET_TAGS = (); }; };
+		45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2D1BA364ED00292B1C /* AppDelegate.swift */; };
+		45773F301BA364ED00292B1C /* ScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2E1BA364ED00292B1C /* ScreenView.swift */; };
+		45773F321BA3650000292B1C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F311BA3650000292B1C /* Window.swift */; };
 		45D9CC411B778DE10035D540 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC401B778DE10035D540 /* Assets.xcassets */; };
 		45D9CC441B778DE10035D540 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC421B778DE10035D540 /* MainMenu.xib */; };
 		45D9CC4F1B778DE10035D540 /* gbemuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC4E1B778DE10035D540 /* gbemuTests.swift */; };
@@ -19,7 +19,7 @@
 		45D9CC601B7F7F6C0035D540 /* GPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC5F1B7F7F6C0035D540 /* GPU.swift */; };
 		45D9CC621B7FA3770035D540 /* Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC611B7FA3770035D540 /* Names.swift */; };
 		45F367AF1BA048C4002BF8BB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F367AE1BA048C4002BF8BB /* Joypad.swift */; };
-		45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FACF511BA34F1700576E25 /* Gameboy.swift */; settings = {ASSET_TAGS = (); }; };
+		45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FACF511BA34F1700576E25 /* Gameboy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,14 +169,16 @@
 		45D9CC331B778DE10035D540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Otis Carpay";
 				TargetAttributes = {
 					45D9CC3A1B778DE10035D540 = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0800;
 					};
 					45D9CC491B778DE10035D540 = {
 						CreatedOnToolsVersion = 7.0;
+						LastSwiftMigration = 0800;
 						TestTargetID = 45D9CC3A1B778DE10035D540;
 					};
 				};
@@ -280,8 +282,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -303,7 +307,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -324,8 +328,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -341,9 +347,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -358,6 +365,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -370,7 +378,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -383,6 +392,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemuTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gbemu.app/Contents/MacOS/gbemu";
 			};
 			name = Debug;
@@ -396,6 +406,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemuTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gbemu.app/Contents/MacOS/gbemu";
 			};
 			name = Release;
