@@ -10,6 +10,7 @@
 		45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2D1BA364ED00292B1C /* AppDelegate.swift */; };
 		45773F301BA364ED00292B1C /* ScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2E1BA364ED00292B1C /* ScreenView.swift */; };
 		45773F321BA3650000292B1C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F311BA3650000292B1C /* Window.swift */; };
+		4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599DAB11E12DCB700A4EB65 /* OAM.swift */; };
 		45D9CC411B778DE10035D540 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC401B778DE10035D540 /* Assets.xcassets */; };
 		45D9CC441B778DE10035D540 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC421B778DE10035D540 /* MainMenu.xib */; };
 		45D9CC4F1B778DE10035D540 /* gbemuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC4E1B778DE10035D540 /* gbemuTests.swift */; };
@@ -36,6 +37,7 @@
 		45773F2D1BA364ED00292B1C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		45773F2E1BA364ED00292B1C /* ScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenView.swift; sourceTree = "<group>"; };
 		45773F311BA3650000292B1C /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
+		4599DAB11E12DCB700A4EB65 /* OAM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
 		45D9CC3B1B778DE10035D540 /* gbemu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gbemu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D9CC401B778DE10035D540 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45D9CC431B778DE10035D540 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				45D9CC611B7FA3770035D540 /* Names.swift */,
 				45D9CC5D1B78CDE30035D540 /* MMU.swift */,
 				45D9CC5F1B7F7F6C0035D540 /* GPU.swift */,
+				4599DAB11E12DCB700A4EB65 /* OAM.swift */,
 				45D9CC5B1B778FC60035D540 /* Registers.swift */,
 				45FACF511BA34F1700576E25 /* Gameboy.swift */,
 			);
@@ -228,6 +231,7 @@
 			files = (
 				45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */,
 				45773F321BA3650000292B1C /* Window.swift in Sources */,
+				4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */,
 				45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */,
 				45D9CC621B7FA3770035D540 /* Names.swift in Sources */,
 				45773F301BA364ED00292B1C /* ScreenView.swift in Sources */,

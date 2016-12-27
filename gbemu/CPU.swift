@@ -58,7 +58,6 @@ final class CPU {
         clock = (0, 0)
         while clock.t < 70224 {
 //        while true {
-            let oldPC = reg.pc
             ops += 1
             
             if reg.pc == 0x029A {
@@ -138,7 +137,7 @@ final class CPU {
     }
     
     private func call() {
-        var opcode = fetchByte()
+        let opcode = fetchByte()
         
         //Conditional commands will add time if condition is true
         cycle.t = OPTIMES[Int(opcode)]

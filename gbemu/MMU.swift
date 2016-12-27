@@ -133,6 +133,15 @@ class MMU {
         writeByte(address + 1, value: Byte(value >> 8))
     }
     
+    //Transfer dma from XX00-XX9F to FE00-FE9F
+    func transferDMA(_ value: Byte) {
+        let from = Word(value) << 8
+        let to = Word(0xFE00)
+        for i in Word(0) ..< 0xA0 {
+            writeByte(to + i, value: readByte(from + i))
+        }
+    }
+    
     func load(_ rom: [Byte]) {
         self.rom = rom
     }
