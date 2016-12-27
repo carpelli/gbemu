@@ -15,7 +15,7 @@ final class CPU {
     var cycle = (t: 0, _x: 0)
     var reg = Registers()
     var mmu: MMU
-    var enableInterrupts = true
+    var enableInterrupts = false
     
     var ops = 0
     
@@ -56,10 +56,14 @@ final class CPU {
     
     func runFrame() {
         clock = (0, 0)
-//        while clock.t < 70224 {
-        while true {
+        while clock.t < 70224 {
+//        while true {
             let oldPC = reg.pc
             ops += 1
+            
+            if reg.pc == 0x029A {
+            
+            }
             
             call()
             opsPerformed += 1
@@ -134,7 +138,7 @@ final class CPU {
     }
     
     private func call() {
-        let opcode = fetchByte()
+        var opcode = fetchByte()
         
         //Conditional commands will add time if condition is true
         cycle.t = OPTIMES[Int(opcode)]
@@ -393,7 +397,7 @@ final class CPU {
             case 0xEC: __()
             case 0xED: __()
             case 0xEE: XOR_A_n()
-            case 0xEF: RST(28)
+            case 0xEF: RST(0x28)
                 
             case 0xF0: LDH_A_n()
             case 0xF1: POP(&reg.af)
@@ -769,7 +773,7 @@ final class CPU {
     
     ///Loads a into ($FF00 + c)
     private func LD_C_A() {
-        LD(&reg.a, 0xFF00 | Word(reg.c))
+        LD(0xFF00 | Word(reg.c), reg.a)
     }
     
     ///Loads a into (hl), increases hl
@@ -1247,9 +1251,9 @@ final class CPU {
         reg.pc = fetchWord()
     }
     
-    ///Jump to (hl)
+    ///Jump to hl
     private func JP_HL() {
-        reg.pc = mmu.readWord(reg.hl)
+        reg.pc = reg.hl
     }
     
     ///Jump to nn if flag is set
@@ -1309,8 +1313,8 @@ final class CPU {
     
     ///Return and enable interrupts
     private func RETI() {
-        RET()
         EI()
+        RET()
     }
     
     ///Call to set value

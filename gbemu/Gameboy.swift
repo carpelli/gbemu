@@ -33,7 +33,9 @@ class Gameboy {
     }
     
     func run() {
-        cpu.runFrame()
+        while true {
+            cpu.runFrame()
+        }
     }
     
     func run(times: Int) {

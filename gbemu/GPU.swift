@@ -32,7 +32,7 @@ class GPU {
     let system: Gameboy
     
     private var mode = Mode.oam
-     var modeClock = 0
+    var modeClock = 0
     private var totalClock = 0
     private var line: Byte = 0
     private var bgMap = false
@@ -211,6 +211,8 @@ class GPU {
             fatalError()
         }
         
+//        tile = min(Int(line/8) * 20, 192)
+        
         for _ in 0..<160 {
             colour = palette[tileset[tile][Int(y)][Int(x)]]
             
@@ -227,6 +229,7 @@ class GPU {
                 x = 0
                 lineOffset = (lineOffset + 1) & 0x1F
                 tile = Int(vram[Int(mapOffset) + lineOffset])
+//                tile += 1
                 if bgTile == 1 && tile < 128 {
                     tile += 256
                 }

@@ -14,7 +14,7 @@ class MMU {
     struct InterruptFlags {
         var byte: Byte = 0
         subscript(index: Byte) -> Bool {
-            get { return 1 << index != 0 }
+            get { return byte & (1 << index) != 0 } //ok?
             set(value) { byte = value ? byte | 1 << index : byte & ~(1 << index) }
         }
     }
@@ -40,7 +40,7 @@ class MMU {
     private var rom =  [Byte](repeating: 0, count: 0x8000)
     private var wram = [Byte](repeating: 0, count: 0x2000)
     private var eram = [Byte](repeating: 0, count: 0x2000)
-    private var zram = [Byte](repeating: 0,   count: 0x80)
+    private var zram = [Byte](repeating: 0, count:   0x80)
     var iEnable = InterruptFlags()
     var iFlag = InterruptFlags()
     
@@ -120,7 +120,11 @@ class MMU {
                 } else if addressWord & 0x3F == 0 {
                     return system.joypad.writeByte(value)
                 }
-            default: zram[address & 0x7F] = value //Fixme
+            default:
+                if (value != 0) {
+                    
+                }
+                zram[address & 0x7F] = value //Fixme
         }
     }
     
@@ -130,7 +134,6 @@ class MMU {
     }
     
     func load(_ rom: [Byte]) {
-        //rom[0x7FFF]
         self.rom = rom
     }
 }
