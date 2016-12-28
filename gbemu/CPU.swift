@@ -11,11 +11,14 @@ import Foundation
 var opsPerformed = 0
 
 final class CPU {
+    let mmu: MMU
+    
+    var debug = false
     var clock = (t: 0, m: 0)
     var cycle = (t: 0, _x: 0)
     var reg = Registers()
-    var mmu: MMU
     var enableInterrupts = false
+    var halted = false
     
     var ops = 0
     
@@ -54,32 +57,37 @@ final class CPU {
         return value
     }
     
-    func runFrame() {
-        clock = (0, 0)
-        while clock.t < 70224 {
-//        while true {
-            ops += 1
-            
-            if reg.pc == 0x029A {
-            
-            }
-            
+    func step() {
+        if reg.pc > 0x100 { mmu.isInBios = false }
+        
+        if clock.t > 70224 { clock.t -= 70224; clock.m = clock.t/4 }
+        
+        ops += 1
+        let oldPC = reg.pc
+        
+        if !halted {
             call()
             opsPerformed += 1
-            clock.m += cycle.t/4
-            clock.t += cycle.t
-            mmu.gpu.step(cycle.t)
-            
-            handleInterrupt()
-            
-//            printDebug(oldPC)
+        } else {
+            cycle.t += 4
         }
+        
+        clock.m += cycle.t/4
+        clock.t += cycle.t
+        mmu.gpu.step(cycle.t)
+        
+        handleInterrupt()
+        
+        if debug { printDebug(oldPC) }
     }
     
     private func handleInterrupt() {
         let iEnable = mmu.iEnable
         let iFlag = mmu.iFlag
-        if !enableInterrupts { return }
+        if !enableInterrupts {
+            if halted { halted = false }
+            return
+        }
         
         let triggered = iEnable.byte & iFlag.byte
         if triggered == 0 { return }
@@ -406,7 +414,7 @@ final class CPU {
             case 0xF5: PUSH(reg.af)
             case 0xF6: OR_A_n()
             case 0xF7: RST(0x30)
-            case 0xF8: LD_HL_SPe()
+            case 0xF8: LD_HL_SP_e()
             case 0xF9: LD_SP_HL()
             case 0xFA: LD_A_nn()
             case 0xFB: EI()
@@ -423,6 +431,7 @@ final class CPU {
         let opcode = fetchByte()
         
         cycle.t = (opcode | 0b111 == 0b110) ? 8 : 16
+        if (opcode >> 4 | 0b111 > 4) { cycle.t -= 4 } // correct timing for BIT b (HL) stuff
         
         switch opcode {
             case 0x00: RLC(&reg.b)
@@ -701,17 +710,17 @@ final class CPU {
         }
     }
     
-   private func NOP() {}
+    private func NOP() {}
     
-   private func __() {
+    private func __() {
         fatalError("Undefined instruction")
     }
     
-   private func HALT() {
-        fatalError()
+    private func HALT() {
+        halted = true
     }
     
-   private func STOP() {
+    private func STOP() {
         fatalError()
     }
     
@@ -767,7 +776,7 @@ final class CPU {
     
     ///Loads ($FF00 + c) into a
     private func LD_A_C() {
-        LD(0xFF00 | Word(reg.c), reg.a)
+        LD(&reg.a, 0xFF00 | Word(reg.c))
     }
     
     ///Loads a into ($FF00 + c)
@@ -811,16 +820,16 @@ final class CPU {
         reg.sp = reg.hl
     }
     
-    private func LD_HL_SPe() {
-        let e = Int32(Int8(bitPattern: fetchByte()))
-        let sp = Int32(reg.sp)
+    private func LD_HL_SP_e() {
+        let e = Word(bitPattern: Int16(Int8(bitPattern: fetchByte())))
+        let sp = reg.sp
         
-        reg.hl = mmu.readWord(Word(truncatingBitPattern: sp + e))
+        reg.hl = sp &+ e
         
         reg.flags.Z = false
         reg.flags.N = false
-        reg.flags.H = (sp & 0x000F) + (e & 0x000F) > 0x000F
-        reg.flags.C = (sp & 0x00FF) + (e & 0x00FF) > 0x00FF
+        reg.flags.H = sp & 0x0F + e & 0x0F > 0x0F
+        reg.flags.C = sp & 0xFF + e & 0xFF > 0xFF
     }
     
     private func PUSH(_ rr: Word) {
@@ -1006,7 +1015,7 @@ final class CPU {
         let r = mmu.readByte(reg.hl) &- 1
         
         reg.flags.Z = r == 0
-        reg.flags.N = false
+        reg.flags.N = true
         reg.flags.H = (r & 0xF) == 0xF
         mmu.writeByte(reg.hl, value: r)
     }
@@ -1056,10 +1065,10 @@ final class CPU {
     
     ///Add signed n (two's complement) to sp
     private func ADD_SP() {
-        let e = Int32(Int8(bitPattern: fetchByte()))
-        let sp = Int32(reg.sp)
+        let e = Word(bitPattern: Int16(Int8(bitPattern: fetchByte())))
+        let sp = reg.sp
         
-        reg.sp = Word(truncatingBitPattern: sp + e)
+        reg.sp = sp &+ e
         reg.flags.Z = false
         reg.flags.N = false
         reg.flags.H = (sp & 0x000F) + (e & 0x000F) > 0x000F
@@ -1162,36 +1171,48 @@ final class CPU {
         SHIFT COMMANDS
     --------------------*/
     
+    ///Shift left through carry
     private func SLA(_ s: inout Byte) {
         reg.flags.C = s & 0x80 == 0x80
         s = s << 1
         reg.flags.Z = s == 0
+        reg.flags.N = false
+        reg.flags.H = false
     }
     
+    ///Shift left into carry
     private func SLA(_ rr: Word) {
         var s = mmu.readByte(rr)
         SLA(&s)
         mmu.writeByte(rr, value: s)
     }
     
+    ///Logical shift right into carry (pad zero)
     private func SRA(_ s: inout Byte) {
         reg.flags.C = s & 1 == 1
         s = (s >> 1) | (s & 0x80)
         reg.flags.Z = s == 0
+        reg.flags.N = false
+        reg.flags.H = false
     }
     
+    ///Logical shift right into carry (pad zero)
     private func SRA(_ rr: Word) {
         var s = mmu.readByte(rr)
         SRA(&s)
         mmu.writeByte(rr, value: s)
     }
     
+    ///Arithmetic shift right into carry (pad significant)
     private func SRL(_ s: inout Byte) {
         reg.flags.C = s & 1 == 1
         s = s >> 1
         reg.flags.Z = s == 0
+        reg.flags.N = false
+        reg.flags.H = false
     }
     
+    ///Arithmetic shift right into carry (pad significant)
     private func SRL(_ rr: Word) {
         var s = mmu.readByte(rr)
         SRL(&s)
@@ -1341,21 +1362,48 @@ final class CPU {
     }
     
     private func DAA() {
-        var adjust: Byte = reg.flags.C ? 0x60 : 0x00
-        if reg.flags.H {
-            adjust |= 0x06
-        }
-        if !reg.flags.N {
-            if reg.a & 0x0F > 0x09 { adjust |= 0x06 }
-            if reg.a > 0x99 { adjust |= 0x60 }
-            reg.a = reg.a &+ adjust
+//        var adjust: Byte = reg.flags.C ? 0x60 : 0x00
+//        if reg.flags.H {
+//            adjust |= 0x06
+//        }
+//        if !reg.flags.N {
+//            if reg.a & 0x0F > 0x09 { adjust |= 0x06 }
+//            if reg.a > 0x99 { adjust |= 0x60 }
+//            reg.a = reg.a &+ adjust
+//        } else {
+//            reg.a = reg.a &- adjust
+//        }
+//        
+//        reg.flags.Z = reg.a == 0
+//        reg.flags.H = false
+//        reg.flags.C = adjust > 0x60
+        var a = Int(reg.a)
+        
+        if (!reg.flags.N) {
+            if reg.flags.H || a & 0xF > 0x9 {
+                a = a &+ 0x06
+            }
+            if reg.flags.C || a > 0x9F {
+                a = a &+ 0x60
+            }
         } else {
-            reg.a = reg.a &- adjust
+            if reg.flags.H {
+                a = (a &- 6) & 0xFF
+            }
+            if reg.flags.C {
+                a = a &- 0x60
+            }
         }
         
-        reg.flags.Z = reg.a == 0
+        reg.flags.Z = false
         reg.flags.H = false
-        reg.flags.C = adjust > 0x60
+        
+        if a & 0x100 == 0x100 { reg.flags.C = true }
+        
+        a &= 0xFF
+        reg.a = Byte(truncatingBitPattern: a)
+        
+        if a == 0 { reg.flags.Z = true }
     }
     
     private func CPL() {
@@ -1383,5 +1431,9 @@ final class CPU {
     
     private func DI() {
         enableInterrupts = false
+    }
+    
+    deinit {
+        print("CPU released")
     }
 }

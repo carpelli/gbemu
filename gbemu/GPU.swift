@@ -31,7 +31,7 @@ class GPU {
             repeating: [0, 0, 0, 0, 0, 0, 0, 0],
             count: 8
         ),
-        count: 256
+        count: 384
     )
     
     var image = [Byte](repeating: 0, count: 160*144*bitSize)
@@ -145,7 +145,7 @@ class GPU {
             case 0xFF45:
                 return lineCompare
             
-            default: return 0
+            default: fatalError()
         }
     }
     
@@ -157,7 +157,7 @@ class GPU {
                 switchBG =  value & 0x01 == 0x01
                 switchObj = value & 0x02 == 0x02
                 bgMap =     value & 0x08 == 0x08
-//                bgTile =    value & 0x10 == 0x10 ? 1 : 0
+                bgTile =    value & 0x10 == 0x10 ? 1 : 0
                 switchLCD = value & 0x80 == 0x80
             
             // LCD Status
@@ -184,12 +184,16 @@ class GPU {
                 for i in 0..<4 {
                     objPalettes[paletteIndex][i] = colors[Int(value >> Byte(2*i) & 0b11)]
                 }
+            case 0xFF4A, 0xFF4B: break
             
-            default: break
+        default: break
         }
     }
     
     func renderScan() {
+        //use by sprite renderer
+        var scanrow = [Int](repeating: 0, count: 160)
+        
         if switchBG {
             //VRAM offset for the tilemap ????
             var mapOffset: Word = bgMap ? 0x1C00 : 0x1800
@@ -216,13 +220,14 @@ class GPU {
             // indices are signed; calculate a real tile offset
             if bgTile == 0 && tile < 128 {
                 tile += 256
-                fatalError()
             }
             
 //            tile = min(Int(line/8) * 20, 192)
             
-            for _ in 0..<160 {
+            for i in 0..<160 {
                 let color = bgPalette[tileset[tile][Int(y)][Int(x)]]
+                
+                scanrow[i] = tileset[tile][Int(y)][Int(x)]
                 
                 //Plot pixel to bitmap
                 image[bitmapOffset + 0] = color[0]
@@ -237,7 +242,7 @@ class GPU {
                     x = 0
                     lineOffset = (lineOffset + 1) & 0x1F
                     tile = Int(vram[Int(mapOffset) + lineOffset])
-//                    tile += 1
+//                    tile = min(tile+1,383)
                     if bgTile == 0 && tile < 128 {
                         tile += 256
                     }
@@ -246,10 +251,8 @@ class GPU {
         }
         
         if switchObj {
-            for i in 0..<40 {
-                let object = oam.objects[i]
-                
-                guard case object.y ..< object.y+8 = Int(line) else { break }
+            for object in oam.objects {
+                guard case object.y ..< object.y+8 = Int(line) else { continue }
                 
                 let bitmapOffset = Int(line) * 160 * 4
                 
@@ -264,7 +267,7 @@ class GPU {
                     
                     if 0..<160 ~= object.x + x &&
                         tileRow[x] != 0 &&
-                        (object.priority || image[spriteOffset] == 0)
+                        (object.priority || scanrow[object.x + x] == 0) //FIXME
                     {
                         let color = objPalettes[object.palette ? 1 : 0][tileRow[x]]
                         
@@ -280,7 +283,7 @@ class GPU {
     }
     
     func updateTile(_ address: Word, value: Byte) {
-        guard address & 0x1000 == 0 else {
+        guard address - 0x8000 < 0x1800 else {
             return
         }
         
@@ -288,7 +291,7 @@ class GPU {
         let address = Int(address & 0x1FFF)
         
         //Work out which tile and row was updated
-        let tile = (address >> 4) & 0xFF
+        let tile = address >> 4
         
         var sx: Byte
         for y in 0..<8 {
@@ -302,5 +305,9 @@ class GPU {
                     Int((lowLine  & sx) > 0 ? 2 : 0)
             }
         }
+    }
+    
+    deinit {
+        print("GPU released")
     }
 }

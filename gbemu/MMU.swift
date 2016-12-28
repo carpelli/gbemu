@@ -9,7 +9,7 @@
 import Swift
 
 class MMU {
-    private var isInBios = false
+    var isInBios = true
     
     struct InterruptFlags {
         var byte: Byte = 0
@@ -93,15 +93,15 @@ class MMU {
     }
     
     func readWord(_ address: UInt16) -> Word {
-        return Word(readByte(address)) | (Word(readByte(address + 1)) << 8)
+        return Word(readByte(address)) | (Word(readByte(address &+ 1)) << 8)
     }
     
     func writeByte(_ address: UInt16, value: Byte) {
         let addressWord = address
         let address = Int(address)
         switch (addressWord) {
-            case 0x0000 ..< 0x4000: rom[address] = value
-            case 0x4000 ..< 0x8000: rom[address] = value
+            case 0x0000 ..< 0x4000: break
+            case 0x4000 ..< 0x8000: break
                 
             case 0x8000 ..< 0xA000: gpu.vram[address & 0x1FFF] = value; gpu.updateTile(addressWord, value: value)
             
@@ -130,7 +130,7 @@ class MMU {
     
     func writeWord(_ address: UInt16, value: Word) {
         writeByte(address, value: Byte(truncatingBitPattern: value))
-        writeByte(address + 1, value: Byte(value >> 8))
+        writeByte(address &+ 1, value: Byte(value >> 8)) //help
     }
     
     //Transfer dma from XX00-XX9F to FE00-FE9F
@@ -144,5 +144,9 @@ class MMU {
     
     func load(_ rom: [Byte]) {
         self.rom = rom
+    }
+    
+    deinit {
+        print("MMU released")
     }
 }

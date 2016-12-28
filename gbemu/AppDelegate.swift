@@ -13,22 +13,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: Window!
     @IBOutlet weak var view: ScreenView!
+    @IBOutlet weak var romList: NSMenu!
+    
+    let queue = OperationQueue()
+    var gameboy: Gameboy!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        let data = NSDataAsset(name: "tetris")!.data
-        let rom = [Byte](data)
+        gameboy = Gameboy(screen: view, joypadInput: window)
         
-        let gameboy = Gameboy(screen: view, joypadInput: window)
+        for url in Bundle.main.urls(forResourcesWithExtension: "gb", subdirectory: nil)! {
+            romList.addItem(ROMMenuItem(to: url, app: self))
+        }
+    }
+    
+    func loadROM(_ rom: [Byte]) {
+        gameboy.stop()
+        queue.waitUntilAllOperationsAreFinished()
+        gameboy.reset()
         gameboy.start(withRom: rom)
+        queue.addOperation(gameboy.run)
         
-        let queue = OperationQueue()
-        queue.addOperation({ gameboy.run() })
-//        gameboy.run(times: 1)
-        //Thread.detachNewThreadSelector(Selector("gameLoop:"), toTarget: gameboy, with: nil)
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
 }
-
