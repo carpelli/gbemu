@@ -1,3 +1,4 @@
+
 //
 //  GPU.swift
 //  gbemu
@@ -5,6 +6,8 @@
 //  Created by Otis Carpay on 15/08/15.
 //  Copyright © 2015 Otis Carpay. All rights reserved.
 //
+
+import Dispatch
 
 protocol GPUOutputReceiver {
     func putImageData(_ data: [Byte])
@@ -17,13 +20,15 @@ let colors: [[Byte]] = [
     [255, 255, 255]
 ].reversed()//???????
 
-class GPU {
+final class GPU {
     enum Mode: Byte {
         case hBlank = 0, vBlank, oam, vram
     }
     
     var vram = [Byte](repeating: 0, count: 0x2000)
     var oam = OAM()
+    
+    var totalTime = 0.0
     
     var tileset =
     [[[Int]]](
@@ -34,20 +39,30 @@ class GPU {
         count: 384
     )
     
-    var image = [Byte](repeating: 0, count: 160*144*bitSize)
+    var image = [Byte](repeating: 0, count: 160*144*4)
     let screen: GPUOutputReceiver
     let system: Gameboy
     
     private var mode = Mode.oam
-    var modeClock = 0
-    private var totalClock = 0
+    private var modeClock = 0
     private var line: Byte = 0
     private var bgMap = false
+    private var windowMap = false
     private var switchBG = false
     private var switchObj = false
+    private var switchWindow = false
     private var bgTile = 1
     private var switchLCD = false
     private var lineCompare: Byte = 0
+    private var tallSprites = false
+    
+    private var intHBlankEnable = false
+    private var intVBlankEnable = false
+    private var intOAMEnable = false
+    private var intCoEnable = false
+    
+    private var windowX = 0
+    private var windowY = 0
     
     private var scanY: Byte = 0
     private var scanX: Byte = 0
@@ -63,50 +78,61 @@ class GPU {
         self.screen = screen
     }
     
-    func step(_ t: Int) {
-        modeClock += t
-        totalClock += t
+    func step(_ m: Int) {
+        modeClock += m
         
         switch mode {
-            //OAM read mode, scanline active
+            //OAM read mode, scanline active FIXME what happens during these modes
             case .oam:
-                if modeClock > 80 {
+                if modeClock > 20 {
                     //Enter scanline mode 3
-                    modeClock -= 80
+                    modeClock -= 20
                     mode = .vram
                 }
             //VRAM read mode, scanline active
             case .vram:
-                if modeClock > 172 {
+                if modeClock > 43 {
                     //Enter hblank
-                    modeClock -= 172
+                    modeClock -= 43
                     mode = .hBlank
+                    if (intHBlankEnable) { system.cpu.mmu.iFlag[1] = true }
                     
                     //Write scanline to buffer
+                    let start = DispatchTime.now()
                     renderScan()
-                }
+                    let end = DispatchTime.now()
+                    let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
+                    totalTime += Double(nanoTime)/1_000_000
+            }
             //hblank, after last hblank, push screen to bitmap
             case .hBlank:
-                if modeClock > 204 {
-                    modeClock -= 204
+                if modeClock > 51 {
+                    modeClock -= 51
                     line += 1
+                    if (intCoEnable && line == lineCompare) { system.cpu.mmu.iFlag[1] = true }
                     
                     if line == 144 {
                         screen.putImageData(image)
+//                        print("total time rendering this frame is \(totalTime)ms")
+                        totalTime = 0
                         mode = .vBlank
+                        if (intVBlankEnable) { system.cpu.mmu.iFlag[1] = true }
                         system.cpu.mmu.iFlag[0] = true
                     } else {
                         mode = .oam
+                        if (intOAMEnable) { system.cpu.mmu.iFlag[1] = true }
                     }
                 }
             //vblank
             case .vBlank:
-                if modeClock > 456 {
-                    modeClock -= 456
+                if modeClock > 114 {
+                    modeClock -= 114
                     line += 1
+                    if (intCoEnable && line == lineCompare) { system.cpu.mmu.iFlag[1] = true }
                     
                     if line == 154 {
                         mode = .oam
+                        if (intOAMEnable) { system.cpu.mmu.iFlag[1] = true }
                         line = 0
                     }
                 }
@@ -119,17 +145,24 @@ class GPU {
             // LCD Control
             case 0xFF40:
                 return
-                    (switchBG  ? 0x01 : 0x00) |
-                    (switchObj ? 0x02 : 0x00) |
-                    (bgMap     ? 0x08 : 0x00) |
-                    (bgTile==1 ? 0x10 : 0x00) |
-                    (switchLCD ? 0x80 : 0x00)
+                    (switchBG  ?    0x01 : 0x00) |
+                    (switchObj ?    0x02 : 0x00) |
+                    (tallSprites ?  0x04 : 0x00) |
+                    (bgMap     ?    0x08 : 0x00) |
+                    (bgTile == 1 ?  0x10 : 0x00) |
+                    (switchWindow ? 0x20 : 0x00) |
+                    (windowMap ?    0x40 : 0x00) |
+                    (switchLCD ?    0x80 : 0x00)
             
             case 0xFF41:
                 return
+                    mode.rawValue                       |
                     (line == lineCompare ? 0x04 : 0x00) |
-                    mode.rawValue
-                
+                    (intHBlankEnable     ? 0x08 : 0x00) |
+                    (intVBlankEnable     ? 0x10 : 0x00) |
+                    (intOAMEnable        ? 0x20 : 0x00) |
+                    (intCoEnable         ? 0x40 : 0x00)
+            
             // Scroll Y
             case 0xFF42:
                 return scanY;
@@ -145,7 +178,7 @@ class GPU {
             case 0xFF45:
                 return lineCompare
             
-            default: fatalError()
+            default: return 0
         }
     }
     
@@ -154,14 +187,21 @@ class GPU {
         {
             // LCD Control
             case 0xFF40:
-                switchBG =  value & 0x01 == 0x01
-                switchObj = value & 0x02 == 0x02
-                bgMap =     value & 0x08 == 0x08
-                bgTile =    value & 0x10 == 0x10 ? 1 : 0
-                switchLCD = value & 0x80 == 0x80
+                switchBG =     value & 0x01 == 0x01
+                switchObj =    value & 0x02 == 0x02
+                tallSprites =  value & 0x04 == 0x04
+                bgMap =        value & 0x08 == 0x08
+                bgTile =       value & 0x10 == 0x10 ? 1 : 0
+                switchWindow = value & 0x20 == 0x20
+                windowMap =    value & 0x40 == 0x40
+                switchLCD =    value & 0x80 == 0x80
             
             // LCD Status
-            case 0xFF41: return
+            case 0xFF41:
+                intHBlankEnable = value & 0x08 > 0
+                intVBlankEnable = value & 0x10 > 0
+                intOAMEnable    = value & 0x20 > 0
+                intCoEnable     = value & 0x40 > 0
                 
             // Scroll Y
             case 0xFF42: scanY = value
@@ -184,7 +224,10 @@ class GPU {
                 for i in 0..<4 {
                     objPalettes[paletteIndex][i] = colors[Int(value >> Byte(2*i) & 0b11)]
                 }
-            case 0xFF4A, 0xFF4B: break
+            case 0xFF4A:
+                windowY = Int(value)
+            case 0xFF4B:
+                windowX = Int(value) - 7
             
         default: break
         }
@@ -206,9 +249,11 @@ class GPU {
             
             //Which line of pixels to use in the tiles
             let y = (line &+ scanY) & 7
+//            let y = line & 7
             
             //Where in the tile line to start
             var x = scanX & 7
+//            var x = 0
             
             //Where to render on the bitmap
             var bitmapOffset = Int(line) * 160 * 4
@@ -234,7 +279,7 @@ class GPU {
                 image[bitmapOffset + 1] = color[1]
                 image[bitmapOffset + 2] = color[2]
                 //screen[bitmapOffset + 3] = colour[3]
-                bitmapOffset += bitSize
+                bitmapOffset += 4
                 
                 //When this tile ends, read another
                 x += 1
@@ -250,16 +295,74 @@ class GPU {
             }
         }
         
+        if switchWindow && Int(line) >= windowY {
+            var mapOffset: Word = windowMap ? 0x1C00 : 0x1800
+            let windowLine = Int(line) - windowY
+            
+            if windowLine >= 0 {
+                mapOffset += (Word(windowLine) / 8) * 32
+                let y = windowLine & 7
+                var bitmapOffset = Int(line) * 160 * 4
+                
+                var x = 0
+                var lineOffset = 0
+                var tile = Int(vram[Int(mapOffset)])
+                if bgTile == 0 && tile < 128 {
+                    tile += 256
+                }
+                
+                for i in windowX..<160 {
+                    if i >= 0 {
+                        let color = bgPalette[tileset[tile][y][x]]
+                        
+                        scanrow[i] = tileset[tile][Int(y)][Int(x)]
+                        
+                        image[bitmapOffset + 0] = color[0]
+                        image[bitmapOffset + 1] = color[1]
+                        image[bitmapOffset + 2] = color[2]
+                        bitmapOffset += 4
+                    }
+                    
+                    x += 1
+                    if x == 8 {
+                        x = 0
+                        lineOffset = (lineOffset + 1) & 0x1F
+                        tile = Int(vram[Int(mapOffset) + lineOffset])
+                        if bgTile == 0 && tile < 128 {
+                            tile += 256
+                        }
+                    }
+                }
+            }
+        }
+        
         if switchObj {
-            for object in oam.objects {
-                guard case object.y ..< object.y+8 = Int(line) else { continue }
+            var spriteCount = 0
+            let height = tallSprites ? 16 : 8
+            
+            for object in oam.objects.sorted(by: { $0.x < $1.x }).reversed() {
+                guard case object.y ..< object.y + height = Int(line) else { continue }
+                
+                guard spriteCount < 10 else { break }
+                spriteCount += 1
                 
                 let bitmapOffset = Int(line) * 160 * 4
                 
                 //Flip what needs to be flipped
                 var tileRowIndex = Int(line) - object.y
-                if object.yFlip { tileRowIndex = 7 - tileRowIndex }
-                var tileRow = tileset[object.tile][tileRowIndex]
+                if object.yFlip { tileRowIndex = height - 1 - tileRowIndex }
+                
+                var tile = object.tile
+                //Fix for tall sprites
+                if tallSprites {
+                    //tile |= 0xFE
+                    if tileRowIndex > 7 {
+                        tileRowIndex -= 8
+                        tile += 1
+                    }
+                }
+                
+                var tileRow = tileset[tile][tileRowIndex]
                 if object.xFlip { tileRow = tileRow.reversed() }
                 
                 for x in 0..<8 {

@@ -17,10 +17,13 @@ class Joypad {
         case a, b, select, start, right, left, up, down
     }
     
+    private let mmu: MMU
+    
     private var rows: [Byte] = [0x0F, 0x0F]
     private var column: Byte = 0
     
-    init(input: JoypadInput) {
+    init(input: JoypadInput, mmu: MMU) {
+        self.mmu = mmu
         input.connectToJoypad(self)
     }
     
@@ -47,6 +50,7 @@ class Joypad {
             case .up:     rows[1] &= 0b1011
             case .down:   rows[1] &= 0b0111
         }
+        mmu.iFlag[4] = true
     }
     
     func buttonUp(_ button: Button) {

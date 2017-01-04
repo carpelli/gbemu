@@ -12,30 +12,35 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: Window!
-    @IBOutlet weak var view: ScreenView!
     @IBOutlet weak var romList: NSMenu!
     
-    let queue = OperationQueue()
+    let queue = DispatchQueue(label: "queue")
+    let group = DispatchGroup()
     var gameboy: Gameboy!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        gameboy = Gameboy(screen: view, joypadInput: window)
-        
         for url in Bundle.main.urls(forResourcesWithExtension: "gb", subdirectory: nil)! {
             romList.addItem(ROMMenuItem(to: url, app: self))
         }
     }
     
     func loadROM(_ rom: [Byte]) {
+        gameboy = gameboy ?? Gameboy(screen: window.emuScreen, joypadInput: window) {
+            self.queue.asyncAfter(deadline: $0, execute: $1)
+        }
         gameboy.stop()
-        queue.waitUntilAllOperationsAreFinished()
+        usleep(20000) //Fixme
         gameboy.reset()
         gameboy.start(withRom: rom)
-        queue.addOperation(gameboy.run)
-        
+        gameboy.run()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
+    }
+    
+    // terminate when the window closes
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return true;
     }
 }

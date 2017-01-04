@@ -6,7 +6,7 @@
 //  Copyright © 2015 Otis Carpay. All rights reserved.
 //
 
-import Cocoa
+import Dispatch
 
 typealias Byte = UInt8
 typealias Word = UInt16
@@ -17,7 +17,7 @@ extension UnsignedInteger {
 }
 
 class Gameboy {
-    let joypad: Joypad
+    var joypad: Joypad!
     let screen: GPUOutputReceiver
     
     private var stopped = false
@@ -25,11 +25,21 @@ class Gameboy {
     var cpu: CPU!
     var gpu: GPU!
     
-    init(screen: GPUOutputReceiver, joypadInput: JoypadInput) {
-        joypad = Joypad(input: joypadInput)
+    let halfFrameTime = 1.0 / 120
+    let halfFrameTicks = 1_048_576 / 120
+    
+    typealias setTimerType = (DispatchTime, @escaping () -> ()) -> ()
+    let setTimer: setTimerType
+    
+    init(screen: GPUOutputReceiver, joypadInput: JoypadInput,
+         setTimer: @escaping setTimerType) {
+        
+        self.setTimer = setTimer
         self.screen = screen
+        
         gpu = GPU(system: self, screen: screen)
         cpu = CPU(system: self) // Can be better
+        joypad = Joypad(input: joypadInput, mmu: self.cpu.mmu)
     }
     
     func reset() {
@@ -46,15 +56,19 @@ class Gameboy {
         stopped = true
     }
     
+    var count = 0
     func run() {
-        while !stopped {
-            cpu.step()
-        }
-    }
-    
-    func run(times: Int) {
-        for _ in 1...times {
-            cpu.step()
+        if !stopped {
+            let nextTime = DispatchTime.now() + halfFrameTime
+            
+            while count < halfFrameTicks {
+                let m = cpu.step()
+                gpu.step(m)
+                count += m
+            }
+            
+            count -= halfFrameTicks
+            setTimer(nextTime, run)
         }
     }
 }

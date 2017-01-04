@@ -16,8 +16,7 @@
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="gbemu" customModuleProvider="target">
             <connections>
                 <outlet property="romList" destination="j3V-tv-yj2" id="LZW-PP-vx4"/>
-                <outlet property="view" destination="Pfb-UF-GYb" id="1nD-kr-l7j"/>
-                <outlet property="window" destination="QvC-M9-y7g" id="Pdd-kw-V7t"/>
+                <outlet property="window" destination="pGl-eW-SOz" id="817-uU-r8p"/>
             </connections>
         </customObject>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
@@ -192,21 +191,30 @@
             </items>
             <point key="canvasLocation" x="148" y="-12"/>
         </menu>
-        <window title="gbemu" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g" customClass="Window" customModule="gbemu" customModuleProvider="target">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
-            <rect key="contentRect" x="335" y="345" width="480" height="432"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="pGl-eW-SOz" customClass="Window" customModule="gbemu" customModuleProvider="target">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="109" y="138" width="480" height="432"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
-            <view key="contentView" id="EiT-Mj-1SZ">
+            <view key="contentView" id="YhN-Hm-oo5">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="432"/>
-                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pfb-UF-GYb" customClass="ScreenView" customModule="gbemu" customModuleProvider="target">
+                    <openGLView useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pGA-hc-Xkh" customClass="Screen" customModule="gbemu" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="432"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    </customView>
+                    </openGLView>
                 </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="pGA-hc-Xkh" secondAttribute="bottom" id="2S3-aa-KP0"/>
+                    <constraint firstItem="pGA-hc-Xkh" firstAttribute="top" secondItem="YhN-Hm-oo5" secondAttribute="top" id="S72-vc-CFR"/>
+                    <constraint firstAttribute="trailing" secondItem="pGA-hc-Xkh" secondAttribute="trailing" id="Sic-QF-ZfA"/>
+                    <constraint firstItem="pGA-hc-Xkh" firstAttribute="leading" secondItem="YhN-Hm-oo5" secondAttribute="leading" id="pt0-Wg-3lc"/>
+                </constraints>
             </view>
-            <point key="canvasLocation" x="401" y="345"/>
+            <connections>
+                <outlet property="emuScreen" destination="pGA-hc-Xkh" id="vD9-4b-G2e"/>
+            </connections>
+            <point key="canvasLocation" x="208" y="264"/>
         </window>
     </objects>
 </document>

@@ -12,36 +12,47 @@ var opsPerformed = 0
 
 final class CPU {
     let mmu: MMU
+    let system: Gameboy
     
     var debug = false
-    var clock = (t: 0, m: 0)
-    var cycle = (t: 0, _x: 0)
+    var cycle = 0
     var reg = Registers()
     var enableInterrupts = false
     var halted = false
     
+    var oldPCs = [Word](repeating: 0, count: 100)
+    var pointer = 0
+    func printPCs() {
+        var array = Array(oldPCs.suffix(from: pointer))
+        array.append(contentsOf: oldPCs.prefix(upTo: pointer))
+        for element in array {
+            print(String(format: "%04x", element))
+        }
+    }
+    
     var ops = 0
     
     let OPTIMES = [
-         4, 12,  8,  8,  4,  4,  8,  4, 20,  8,  8,  8,  4,  4,  8,  4,
-         4, 12,  8,  8,  4,  4,  8,  4, 12,  8,  8,  8,  4,  4,  8,  4,
-         8, 12,  8,  8,  4,  4,  8,  4,  8,  8,  8,  8,  4,  4,  8,  4,
-         8, 12,  8,  8, 12, 12, 12,  4,  8,  8,  8,  8,  4,  4,  8,  4,
-         4,  4,  4,  4,  4,  4,  8,  4,  4,  4,  4,  4,  4,  4,  8,  4,
-         4,  4,  4,  4,  4,  4,  8,  4,  4,  4,  4,  4,  4,  4,  8,  4,
-         4,  4,  4,  4,  4,  4,  8,  4,  4,  4,  4,  4,  4,  4,  8,  4,
-         8,  8,  8,  8,  8,  8,  4,  8,  4,  4,  4,  4,  4,  4,  8,  4,
-         4,  4,  4,  4,  4,  4,  8,  4,  4,  4,  4,  4,  4,  4,  8,  4,
-         4,  4,  4,  4,  4,  4,  8,  4,  4,  4,  4,  4,  4,  4,  8,  4,
-         4,  4,  4,  4,  4,  4,  8,  4,  4,  4,  4,  4,  4,  4,  8,  4,
-         4,  4,  4,  4,  4,  4,  8,  4,  4,  4,  4,  4,  4,  4,  8,  4,
-         8, 12, 12, 16, 12, 16,  8, 16,  8, 16, 12,  4, 12, 24,  8, 16,
-         8, 12, 12,  0, 12, 16,  8, 16,  8, 16, 12,  0, 12,  0,  8, 16,
-        12, 12,  8,  0,  0, 16,  8, 16, 16,  4, 16,  0,  0,  0,  8, 16,
-        12, 12,  8,  4,  0, 16,  8, 16, 12,  8, 16,  4,  0,  0,  8, 16,
+        1, 3, 2, 2, 1, 1, 2, 1, 5, 2, 2, 2, 1, 1, 2, 1,
+        1, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1,
+        2, 3, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 1, 2, 1,
+        2, 3, 2, 2, 3, 3, 3, 1, 2, 2, 2, 2, 1, 1, 2, 1,
+        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+        2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1,
+        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+        1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+        2, 3, 3, 4, 3, 4, 2, 4, 2, 4, 3, 1, 3, 3, 2, 4,
+        2, 3, 3, 0, 3, 4, 2, 4, 2, 4, 3, 0, 3, 0, 2, 4,
+        3, 3, 2, 0, 0, 4, 2, 4, 4, 1, 4, 0, 0, 0, 2, 4,
+        3, 3, 2, 1, 0, 4, 2, 4, 3, 2, 4, 1, 0, 0, 2, 4,
     ]
     
     init(system: Gameboy) {
+        self.system = system
         mmu = MMU(system: system)
     }
     
@@ -57,10 +68,22 @@ final class CPU {
         return value
     }
     
-    func step() {
+    func step() -> Int {
         if reg.pc > 0x100 { mmu.isInBios = false }
         
-        if clock.t > 70224 { clock.t -= 70224; clock.m = clock.t/4 }
+        cycle = 0
+        
+        handleInterrupt()
+        oldPCs[pointer] = reg.pc
+        pointer = (pointer + 1) % 100
+        
+        if reg.pc == 0x79 {
+            
+        }
+        
+        if reg.pc == 0x89 {
+        
+        }
         
         ops += 1
         let oldPC = reg.pc
@@ -69,42 +92,39 @@ final class CPU {
             call()
             opsPerformed += 1
         } else {
-            cycle.t += 4
+            cycle += 1
         }
         
-        clock.m += cycle.t/4
-        clock.t += cycle.t
-        mmu.gpu.step(cycle.t)
-        
-        handleInterrupt()
+        mmu.timer.increment(cycle)
         
         if debug { printDebug(oldPC) }
+        
+        return cycle
     }
     
     private func handleInterrupt() {
+        guard enableInterrupts || halted else { return }
+        
         let iEnable = mmu.iEnable
         let iFlag = mmu.iFlag
-        if !enableInterrupts {
-            if halted { halted = false }
-            return
-        }
         
         let triggered = iEnable.byte & iFlag.byte
         if triggered == 0 { return }
         
+        if halted && !enableInterrupts { halted = false; return }
+        halted = false
+        
         enableInterrupts = false
         mmu.iFlag.byte &= ~triggered
-        PUSH(reg.pc)
-        switch (triggered) {
-            case 0b00000001: reg.pc = 0x40
-            case 0b00000010: reg.pc = 0x48
-            case 0b00000100: reg.pc = 0x50
-            case 0b00001000: reg.pc = 0x58
-            case 0b00010000: reg.pc = 0x60
-            default: fatalError()
-        }
-        clock.m += 3
-        clock.t += 12
+        
+        PUSH(reg.pc) //TODO change back to switch?
+        if triggered & 0b00000001 > 0 { reg.pc = 0x40 } else
+        if triggered & 0b00000010 > 0 { reg.pc = 0x48 } else
+        if triggered & 0b00000100 > 0 { reg.pc = 0x50 } else
+        if triggered & 0b00001000 > 0 { reg.pc = 0x58 } else
+        if triggered & 0b00010000 > 0 { reg.pc = 0x60 }
+        
+        cycle += 3
     }
     
     private func printDebug(_ oldPC: Word) {
@@ -122,24 +142,25 @@ final class CPU {
         }
         
         
-        if reg.pc > pcAtOp {
-            if (reg.pc - pcAtOp) > Word(2) {
-                string += String(format: " %02X", mmu.readByte(pcAtOp + 2))
-            } else {
-                string += "   "
-            }
-            
-            if (reg.pc - pcAtOp) > Word(1) {
-                string += String(format: " %02X", mmu.readByte(pcAtOp + 1))
-            } else {
-                string += "   "
-            }
-        } else {
-            string += "     "
-        }
+//        if reg.pc > pcAtOp {
+//            if (reg.pc - pcAtOp) > Word(2) {
+//                string += String(format: " %02X", mmu.readByte(pcAtOp + 2))
+//            } else {
+//                string += "   "
+//            }
+//            
+//            if (reg.pc - pcAtOp) > Word(1) {
+//                string += String(format: " %02X", mmu.readByte(pcAtOp + 1))
+//            } else {
+//                string += "   "
+//            }
+//        } else {
+//            string += "     "
+//        }
+        string += String(format: " %02X", mmu.readByte(pcAtOp + 2))
+        string += String(format: " %02X", mmu.readByte(pcAtOp + 1))
         
         string += "  " + String(format: "%01X %02X %02X %02X %01X  ", reg.a, reg.bc, reg.de, reg.hl, reg.flags.byte)
-        string += String(mmu.readByte(0xff44)) + " " + String(mmu.gpu.modeClock)
         
         print(string)
     }
@@ -148,7 +169,7 @@ final class CPU {
         let opcode = fetchByte()
         
         //Conditional commands will add time if condition is true
-        cycle.t = OPTIMES[Int(opcode)]
+        cycle += OPTIMES[Int(opcode)]
         
         switch opcode {
             case 0x00: NOP()
@@ -161,7 +182,7 @@ final class CPU {
             case 0x07: RLCA()
             case 0x08: LD_nn_SP()
             case 0x09: ADD_HL(reg.bc)
-            case 0x0A: LD(&reg.a, reg.bc) //HELP
+            case 0x0A: LD(&reg.a, reg.bc)
             case 0x0B: DEC(&reg.bc)
             case 0x0C: INC(&reg.c)
             case 0x0D: DEC(&reg.c)
@@ -430,8 +451,8 @@ final class CPU {
     private func call_CB() {
         let opcode = fetchByte()
         
-        cycle.t = (opcode | 0b111 == 0b110) ? 8 : 16
-        if (opcode >> 4 | 0b111 > 4) { cycle.t -= 4 } // correct timing for BIT b (HL) stuff
+        cycle += (opcode | 0b111 == 0b110) ? 2 : 4
+        if (opcode >> 4 | 0b111 > 4) { cycle -= 1 } // correct timing for BIT b (HL) stuff
         
         switch opcode {
             case 0x00: RLC(&reg.b)
@@ -721,7 +742,7 @@ final class CPU {
     }
     
     private func STOP() {
-        fatalError()
+        //halted = true
     }
     
     /*-------------------
@@ -1232,6 +1253,7 @@ final class CPU {
         reg.flags.H = true
     }
     
+    ///Set Z to NOT (register) at bit
     private func BIT(_ bit: Byte, _ rr: Word) {
         let s = mmu.readByte(rr)
         BIT(bit, s)
@@ -1244,6 +1266,7 @@ final class CPU {
         s = s | (1 << bit)
     }
     
+    ///Set (register) at bit
     private func SET(_ bit: Byte, _ rr: Word) {
         var s = mmu.readByte(rr)
         SET(bit, &s)
@@ -1256,6 +1279,7 @@ final class CPU {
         s = s & ~(1 << bit)
     }
     
+    ///Reset (register) at bit
     private func RES(_ bit: Byte, _ rr: Word) {
         var s = mmu.readByte(rr)
         RES(bit, &s)
@@ -1280,7 +1304,7 @@ final class CPU {
     private func JP(_ c: Bool) {
         if (c) {
             JP()
-            cycle.t += 4
+            cycle += 1
         } else {
             reg.pc += 2
         }
@@ -1296,7 +1320,7 @@ final class CPU {
     private func JR(_ c: Bool) {
         if (c) {
             JR()
-            cycle.t += 4
+            cycle += 1
         } else {
             reg.pc += 1
         }
@@ -1312,7 +1336,7 @@ final class CPU {
     private func CALL(_ c: Bool) {
         if (c) {
             CALL()
-            cycle.t += 12
+            cycle += 3
         } else {
             reg.pc += 2
         }
@@ -1327,7 +1351,7 @@ final class CPU {
     private func RET(_ c: Bool) {
         if (c) {
             RET()
-            cycle.t += 12
+            cycle += 3
         }
     }
     

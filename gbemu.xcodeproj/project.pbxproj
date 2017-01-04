@@ -7,10 +7,42 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		451AFF2F1E13DC9F00C19756 /* cpu_instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFEFD1E13DC9E00C19756 /* cpu_instrs.gb */; };
+		451AFF301E13DC9F00C19756 /* 01-special.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFEFF1E13DC9E00C19756 /* 01-special.gb */; };
+		451AFF311E13DC9F00C19756 /* 02-interrupts.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF001E13DC9E00C19756 /* 02-interrupts.gb */; };
+		451AFF321E13DC9F00C19756 /* 03-op sp,hl.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF011E13DC9E00C19756 /* 03-op sp,hl.gb */; };
+		451AFF331E13DC9F00C19756 /* 04-op r,imm.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF021E13DC9E00C19756 /* 04-op r,imm.gb */; };
+		451AFF341E13DC9F00C19756 /* 05-op rp.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF031E13DC9F00C19756 /* 05-op rp.gb */; };
+		451AFF351E13DC9F00C19756 /* 06-ld r,r.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF041E13DC9F00C19756 /* 06-ld r,r.gb */; };
+		451AFF361E13DC9F00C19756 /* 07-jr,jp,call,ret,rst.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF051E13DC9F00C19756 /* 07-jr,jp,call,ret,rst.gb */; };
+		451AFF371E13DC9F00C19756 /* 08-misc instrs.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF061E13DC9F00C19756 /* 08-misc instrs.gb */; };
+		451AFF381E13DC9F00C19756 /* 09-op r,r.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF071E13DC9F00C19756 /* 09-op r,r.gb */; };
+		451AFF391E13DC9F00C19756 /* 10-bit ops.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF081E13DC9F00C19756 /* 10-bit ops.gb */; };
+		451AFF3A1E13DC9F00C19756 /* 11-op a,(hl).gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF091E13DC9F00C19756 /* 11-op a,(hl).gb */; };
+		451AFF5B1E13DC9F00C19756 /* opus5.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF2C1E13DC9F00C19756 /* opus5.gb */; };
+		451AFF5C1E13DC9F00C19756 /* tetris.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF2D1E13DC9F00C19756 /* tetris.gb */; };
+		451AFF5D1E13DC9F00C19756 /* ttt.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF2E1E13DC9F00C19756 /* ttt.gb */; };
+		451AFF5F1E13E0A100C19756 /* ROMMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AFF5E1E13E0A100C19756 /* ROMMenuItem.swift */; };
+		451AFF611E14019000C19756 /* drmario.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF601E14018B00C19756 /* drmario.gb */; };
+		451AFF631E14031A00C19756 /* Super Mario Land.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF621E1402E600C19756 /* Super Mario Land.gb */; };
 		45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2D1BA364ED00292B1C /* AppDelegate.swift */; };
-		45773F301BA364ED00292B1C /* ScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2E1BA364ED00292B1C /* ScreenView.swift */; };
 		45773F321BA3650000292B1C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F311BA3650000292B1C /* Window.swift */; };
+		45806B551E1C4BC6002309AE /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45806B541E1C4BC6002309AE /* Sound.swift */; };
+		45806B5C1E1C8651002309AE /* 01-read_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B591E1C8651002309AE /* 01-read_timing.gb */; };
+		45806B5D1E1C8651002309AE /* 02-write_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B5A1E1C8651002309AE /* 02-write_timing.gb */; };
+		45806B5E1E1C8651002309AE /* 03-modify_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B5B1E1C8651002309AE /* 03-modify_timing.gb */; };
+		45806B601E1C8AF7002309AE /* Kirby's Dream Land (USA, Europe).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B5F1E1C8AF7002309AE /* Kirby's Dream Land (USA, Europe).gb */; };
+		45806B621E1D0FF5002309AE /* Metroid II - Return of Samus (World).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B611E1D0FF5002309AE /* Metroid II - Return of Samus (World).gb */; };
+		45806B641E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B631E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb */; };
+		45806B661E1D3874002309AE /* Final Fantasy Legend II (USA).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B651E1D3874002309AE /* Final Fantasy Legend II (USA).gb */; };
+		45806B6A1E1D40B1002309AE /* Killer Instinct (USA, Europe).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B691E1D40B1002309AE /* Killer Instinct (USA, Europe).gb */; };
 		4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599DAB11E12DCB700A4EB65 /* OAM.swift */; };
+		45B7A5951E14528B0023B72D /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B7A5941E14528B0023B72D /* Timer.swift */; };
+		45B7A5981E14731A0023B72D /* Hangman (PD).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45B7A5971E14731A0023B72D /* Hangman (PD).gb */; };
+		45B7A59A1E14816E0023B72D /* instr_timing.gb in Resources */ = {isa = PBXBuildFile; fileRef = 45B7A5991E14816E0023B72D /* instr_timing.gb */; };
+		45B7A59C1E155E1E0023B72D /* Pokemon - Red Version (USA, Europe).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45B7A59B1E155E1E0023B72D /* Pokemon - Red Version (USA, Europe).gb */; };
+		45B7A5A01E155F680023B72D /* Legend of Zelda, The - Link's Awakening (USA, Europe).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45B7A59F1E155F680023B72D /* Legend of Zelda, The - Link's Awakening (USA, Europe).gb */; };
+		45B7A5A41E15793F0023B72D /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B7A5A31E15793F0023B72D /* Screen.swift */; };
 		45D9CC411B778DE10035D540 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC401B778DE10035D540 /* Assets.xcassets */; };
 		45D9CC441B778DE10035D540 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45D9CC421B778DE10035D540 /* MainMenu.xib */; };
 		45D9CC4F1B778DE10035D540 /* gbemuTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC4E1B778DE10035D540 /* gbemuTests.swift */; };
@@ -34,10 +66,74 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		451AFEFD1E13DC9E00C19756 /* cpu_instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = cpu_instrs.gb; sourceTree = "<group>"; };
+		451AFEFF1E13DC9E00C19756 /* 01-special.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "01-special.gb"; sourceTree = "<group>"; };
+		451AFF001E13DC9E00C19756 /* 02-interrupts.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "02-interrupts.gb"; sourceTree = "<group>"; };
+		451AFF011E13DC9E00C19756 /* 03-op sp,hl.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "03-op sp,hl.gb"; sourceTree = "<group>"; };
+		451AFF021E13DC9E00C19756 /* 04-op r,imm.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "04-op r,imm.gb"; sourceTree = "<group>"; };
+		451AFF031E13DC9F00C19756 /* 05-op rp.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "05-op rp.gb"; sourceTree = "<group>"; };
+		451AFF041E13DC9F00C19756 /* 06-ld r,r.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "06-ld r,r.gb"; sourceTree = "<group>"; };
+		451AFF051E13DC9F00C19756 /* 07-jr,jp,call,ret,rst.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "07-jr,jp,call,ret,rst.gb"; sourceTree = "<group>"; };
+		451AFF061E13DC9F00C19756 /* 08-misc instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "08-misc instrs.gb"; sourceTree = "<group>"; };
+		451AFF071E13DC9F00C19756 /* 09-op r,r.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "09-op r,r.gb"; sourceTree = "<group>"; };
+		451AFF081E13DC9F00C19756 /* 10-bit ops.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "10-bit ops.gb"; sourceTree = "<group>"; };
+		451AFF091E13DC9F00C19756 /* 11-op a,(hl).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "11-op a,(hl).gb"; sourceTree = "<group>"; };
+		451AFF0A1E13DC9F00C19756 /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
+		451AFF0C1E13DC9F00C19756 /* 01-special.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "01-special.s"; sourceTree = "<group>"; };
+		451AFF0D1E13DC9F00C19756 /* 02-interrupts.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "02-interrupts.s"; sourceTree = "<group>"; };
+		451AFF0E1E13DC9F00C19756 /* 03-op sp,hl.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "03-op sp,hl.s"; sourceTree = "<group>"; };
+		451AFF0F1E13DC9F00C19756 /* 04-op r,imm.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "04-op r,imm.s"; sourceTree = "<group>"; };
+		451AFF101E13DC9F00C19756 /* 05-op rp.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "05-op rp.s"; sourceTree = "<group>"; };
+		451AFF111E13DC9F00C19756 /* 06-ld r,r.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "06-ld r,r.s"; sourceTree = "<group>"; };
+		451AFF121E13DC9F00C19756 /* 07-jr,jp,call,ret,rst.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "07-jr,jp,call,ret,rst.s"; sourceTree = "<group>"; };
+		451AFF131E13DC9F00C19756 /* 08-misc instrs.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "08-misc instrs.s"; sourceTree = "<group>"; };
+		451AFF141E13DC9F00C19756 /* 09-op r,r.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "09-op r,r.s"; sourceTree = "<group>"; };
+		451AFF151E13DC9F00C19756 /* 10-bit ops.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "10-bit ops.s"; sourceTree = "<group>"; };
+		451AFF161E13DC9F00C19756 /* 11-op a,(hl).s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "11-op a,(hl).s"; sourceTree = "<group>"; };
+		451AFF181E13DC9F00C19756 /* apu.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = apu.s; sourceTree = "<group>"; };
+		451AFF191E13DC9F00C19756 /* build_gbs.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = build_gbs.s; sourceTree = "<group>"; };
+		451AFF1A1E13DC9F00C19756 /* build_rom.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = build_rom.s; sourceTree = "<group>"; };
+		451AFF1B1E13DC9F00C19756 /* checksums.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = checksums.s; sourceTree = "<group>"; };
+		451AFF1C1E13DC9F00C19756 /* console.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = console.bin; sourceTree = "<group>"; };
+		451AFF1D1E13DC9F00C19756 /* console.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = console.s; sourceTree = "<group>"; };
+		451AFF1E1E13DC9F00C19756 /* cpu_speed.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = cpu_speed.s; sourceTree = "<group>"; };
+		451AFF1F1E13DC9F00C19756 /* crc.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = crc.s; sourceTree = "<group>"; };
+		451AFF201E13DC9F00C19756 /* crc_fast.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = crc_fast.s; sourceTree = "<group>"; };
+		451AFF211E13DC9F00C19756 /* delay.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = delay.s; sourceTree = "<group>"; };
+		451AFF221E13DC9F00C19756 /* gb.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; path = gb.inc; sourceTree = "<group>"; };
+		451AFF231E13DC9F00C19756 /* instr_test.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = instr_test.s; sourceTree = "<group>"; };
+		451AFF241E13DC9F00C19756 /* macros.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; path = macros.inc; sourceTree = "<group>"; };
+		451AFF251E13DC9F00C19756 /* multi_custom.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = multi_custom.s; sourceTree = "<group>"; };
+		451AFF261E13DC9F00C19756 /* numbers.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = numbers.s; sourceTree = "<group>"; };
+		451AFF271E13DC9F00C19756 /* printing.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = printing.s; sourceTree = "<group>"; };
+		451AFF281E13DC9F00C19756 /* runtime.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = runtime.s; sourceTree = "<group>"; };
+		451AFF291E13DC9F00C19756 /* testing.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = testing.s; sourceTree = "<group>"; };
+		451AFF2A1E13DC9F00C19756 /* linkfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = linkfile; sourceTree = "<group>"; };
+		451AFF2B1E13DC9F00C19756 /* shell.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; path = shell.inc; sourceTree = "<group>"; };
+		451AFF2C1E13DC9F00C19756 /* opus5.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = opus5.gb; sourceTree = "<group>"; };
+		451AFF2D1E13DC9F00C19756 /* tetris.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = tetris.gb; sourceTree = "<group>"; };
+		451AFF2E1E13DC9F00C19756 /* ttt.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = ttt.gb; sourceTree = "<group>"; };
+		451AFF5E1E13E0A100C19756 /* ROMMenuItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ROMMenuItem.swift; sourceTree = "<group>"; };
+		451AFF601E14018B00C19756 /* drmario.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = drmario.gb; sourceTree = "<group>"; };
+		451AFF621E1402E600C19756 /* Super Mario Land.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Super Mario Land.gb"; sourceTree = "<group>"; };
 		45773F2D1BA364ED00292B1C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		45773F2E1BA364ED00292B1C /* ScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenView.swift; sourceTree = "<group>"; };
 		45773F311BA3650000292B1C /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
+		45806B541E1C4BC6002309AE /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
+		45806B591E1C8651002309AE /* 01-read_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "01-read_timing.gb"; sourceTree = "<group>"; };
+		45806B5A1E1C8651002309AE /* 02-write_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "02-write_timing.gb"; sourceTree = "<group>"; };
+		45806B5B1E1C8651002309AE /* 03-modify_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "03-modify_timing.gb"; sourceTree = "<group>"; };
+		45806B5F1E1C8AF7002309AE /* Kirby's Dream Land (USA, Europe).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Kirby's Dream Land (USA, Europe).gb"; sourceTree = "<group>"; };
+		45806B611E1D0FF5002309AE /* Metroid II - Return of Samus (World).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Metroid II - Return of Samus (World).gb"; sourceTree = "<group>"; };
+		45806B631E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Kirby's Dream Land 2 (USA, Europe).gb"; sourceTree = "<group>"; };
+		45806B651E1D3874002309AE /* Final Fantasy Legend II (USA).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Final Fantasy Legend II (USA).gb"; sourceTree = "<group>"; };
+		45806B691E1D40B1002309AE /* Killer Instinct (USA, Europe).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Killer Instinct (USA, Europe).gb"; sourceTree = "<group>"; };
 		4599DAB11E12DCB700A4EB65 /* OAM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
+		45B7A5941E14528B0023B72D /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
+		45B7A5971E14731A0023B72D /* Hangman (PD).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hangman (PD).gb"; sourceTree = "<group>"; };
+		45B7A5991E14816E0023B72D /* instr_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = instr_timing.gb; sourceTree = "<group>"; };
+		45B7A59B1E155E1E0023B72D /* Pokemon - Red Version (USA, Europe).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pokemon - Red Version (USA, Europe).gb"; sourceTree = "<group>"; };
+		45B7A59F1E155F680023B72D /* Legend of Zelda, The - Link's Awakening (USA, Europe).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Legend of Zelda, The - Link's Awakening (USA, Europe).gb"; sourceTree = "<group>"; };
+		45B7A5A31E15793F0023B72D /* Screen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		45D9CC3B1B778DE10035D540 /* gbemu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gbemu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		45D9CC401B778DE10035D540 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		45D9CC431B778DE10035D540 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
@@ -72,6 +168,115 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		451AFEFB1E13DC9E00C19756 /* roms */ = {
+			isa = PBXGroup;
+			children = (
+				451AFEFC1E13DC9E00C19756 /* cpu_instrs */,
+				451AFF2C1E13DC9F00C19756 /* opus5.gb */,
+				451AFF2D1E13DC9F00C19756 /* tetris.gb */,
+				45806B581E1C8651002309AE /* individual */,
+				451AFF2E1E13DC9F00C19756 /* ttt.gb */,
+				451AFF601E14018B00C19756 /* drmario.gb */,
+				45B7A59F1E155F680023B72D /* Legend of Zelda, The - Link's Awakening (USA, Europe).gb */,
+				451AFF621E1402E600C19756 /* Super Mario Land.gb */,
+				45B7A5971E14731A0023B72D /* Hangman (PD).gb */,
+				45B7A59B1E155E1E0023B72D /* Pokemon - Red Version (USA, Europe).gb */,
+				45806B5F1E1C8AF7002309AE /* Kirby's Dream Land (USA, Europe).gb */,
+				45806B631E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb */,
+				45806B611E1D0FF5002309AE /* Metroid II - Return of Samus (World).gb */,
+				45806B651E1D3874002309AE /* Final Fantasy Legend II (USA).gb */,
+				45806B691E1D40B1002309AE /* Killer Instinct (USA, Europe).gb */,
+			);
+			path = roms;
+			sourceTree = "<group>";
+		};
+		451AFEFC1E13DC9E00C19756 /* cpu_instrs */ = {
+			isa = PBXGroup;
+			children = (
+				45B7A5991E14816E0023B72D /* instr_timing.gb */,
+				451AFEFD1E13DC9E00C19756 /* cpu_instrs.gb */,
+				451AFEFE1E13DC9E00C19756 /* individual */,
+				451AFF0A1E13DC9F00C19756 /* readme.txt */,
+				451AFF0B1E13DC9F00C19756 /* source */,
+			);
+			path = cpu_instrs;
+			sourceTree = "<group>";
+		};
+		451AFEFE1E13DC9E00C19756 /* individual */ = {
+			isa = PBXGroup;
+			children = (
+				451AFEFF1E13DC9E00C19756 /* 01-special.gb */,
+				451AFF001E13DC9E00C19756 /* 02-interrupts.gb */,
+				451AFF011E13DC9E00C19756 /* 03-op sp,hl.gb */,
+				451AFF021E13DC9E00C19756 /* 04-op r,imm.gb */,
+				451AFF031E13DC9F00C19756 /* 05-op rp.gb */,
+				451AFF041E13DC9F00C19756 /* 06-ld r,r.gb */,
+				451AFF051E13DC9F00C19756 /* 07-jr,jp,call,ret,rst.gb */,
+				451AFF061E13DC9F00C19756 /* 08-misc instrs.gb */,
+				451AFF071E13DC9F00C19756 /* 09-op r,r.gb */,
+				451AFF081E13DC9F00C19756 /* 10-bit ops.gb */,
+				451AFF091E13DC9F00C19756 /* 11-op a,(hl).gb */,
+			);
+			path = individual;
+			sourceTree = "<group>";
+		};
+		451AFF0B1E13DC9F00C19756 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				451AFF0C1E13DC9F00C19756 /* 01-special.s */,
+				451AFF0D1E13DC9F00C19756 /* 02-interrupts.s */,
+				451AFF0E1E13DC9F00C19756 /* 03-op sp,hl.s */,
+				451AFF0F1E13DC9F00C19756 /* 04-op r,imm.s */,
+				451AFF101E13DC9F00C19756 /* 05-op rp.s */,
+				451AFF111E13DC9F00C19756 /* 06-ld r,r.s */,
+				451AFF121E13DC9F00C19756 /* 07-jr,jp,call,ret,rst.s */,
+				451AFF131E13DC9F00C19756 /* 08-misc instrs.s */,
+				451AFF141E13DC9F00C19756 /* 09-op r,r.s */,
+				451AFF151E13DC9F00C19756 /* 10-bit ops.s */,
+				451AFF161E13DC9F00C19756 /* 11-op a,(hl).s */,
+				451AFF171E13DC9F00C19756 /* common */,
+				451AFF2A1E13DC9F00C19756 /* linkfile */,
+				451AFF2B1E13DC9F00C19756 /* shell.inc */,
+			);
+			path = source;
+			sourceTree = "<group>";
+		};
+		451AFF171E13DC9F00C19756 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				451AFF181E13DC9F00C19756 /* apu.s */,
+				451AFF191E13DC9F00C19756 /* build_gbs.s */,
+				451AFF1A1E13DC9F00C19756 /* build_rom.s */,
+				451AFF1B1E13DC9F00C19756 /* checksums.s */,
+				451AFF1C1E13DC9F00C19756 /* console.bin */,
+				451AFF1D1E13DC9F00C19756 /* console.s */,
+				451AFF1E1E13DC9F00C19756 /* cpu_speed.s */,
+				451AFF1F1E13DC9F00C19756 /* crc.s */,
+				451AFF201E13DC9F00C19756 /* crc_fast.s */,
+				451AFF211E13DC9F00C19756 /* delay.s */,
+				451AFF221E13DC9F00C19756 /* gb.inc */,
+				451AFF231E13DC9F00C19756 /* instr_test.s */,
+				451AFF241E13DC9F00C19756 /* macros.inc */,
+				451AFF251E13DC9F00C19756 /* multi_custom.s */,
+				451AFF261E13DC9F00C19756 /* numbers.s */,
+				451AFF271E13DC9F00C19756 /* printing.s */,
+				451AFF281E13DC9F00C19756 /* runtime.s */,
+				451AFF291E13DC9F00C19756 /* testing.s */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		45806B581E1C8651002309AE /* individual */ = {
+			isa = PBXGroup;
+			children = (
+				45806B591E1C8651002309AE /* 01-read_timing.gb */,
+				45806B5A1E1C8651002309AE /* 02-write_timing.gb */,
+				45806B5B1E1C8651002309AE /* 03-modify_timing.gb */,
+			);
+			name = individual;
+			path = mem_timing/individual;
+			sourceTree = "<group>";
+		};
 		45D9CC321B778DE10035D540 = {
 			isa = PBXGroup;
 			children = (
@@ -93,10 +298,12 @@
 		45D9CC3D1B778DE10035D540 /* gbemu */ = {
 			isa = PBXGroup;
 			children = (
+				451AFEFB1E13DC9E00C19756 /* roms */,
 				45F367B21BA04B61002BF8BB /* emu */,
 				45773F2D1BA364ED00292B1C /* AppDelegate.swift */,
+				451AFF5E1E13E0A100C19756 /* ROMMenuItem.swift */,
 				45773F311BA3650000292B1C /* Window.swift */,
-				45773F2E1BA364ED00292B1C /* ScreenView.swift */,
+				45B7A5A31E15793F0023B72D /* Screen.swift */,
 				45D9CC401B778DE10035D540 /* Assets.xcassets */,
 				45D9CC421B778DE10035D540 /* MainMenu.xib */,
 				45D9CC451B778DE10035D540 /* Info.plist */,
@@ -118,7 +325,9 @@
 			children = (
 				45F367AE1BA048C4002BF8BB /* Joypad.swift */,
 				45D9CC591B778E110035D540 /* CPU.swift */,
+				45B7A5941E14528B0023B72D /* Timer.swift */,
 				45D9CC611B7FA3770035D540 /* Names.swift */,
+				45806B541E1C4BC6002309AE /* Sound.swift */,
 				45D9CC5D1B78CDE30035D540 /* MMU.swift */,
 				45D9CC5F1B7F7F6C0035D540 /* GPU.swift */,
 				4599DAB11E12DCB700A4EB65 /* OAM.swift */,
@@ -211,7 +420,36 @@
 			buildActionMask = 2147483647;
 			files = (
 				45D9CC411B778DE10035D540 /* Assets.xcassets in Resources */,
+				45B7A5981E14731A0023B72D /* Hangman (PD).gb in Resources */,
+				45806B641E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb in Resources */,
+				45B7A59C1E155E1E0023B72D /* Pokemon - Red Version (USA, Europe).gb in Resources */,
+				451AFF2F1E13DC9F00C19756 /* cpu_instrs.gb in Resources */,
+				451AFF5C1E13DC9F00C19756 /* tetris.gb in Resources */,
+				451AFF611E14019000C19756 /* drmario.gb in Resources */,
+				45B7A59A1E14816E0023B72D /* instr_timing.gb in Resources */,
 				45D9CC441B778DE10035D540 /* MainMenu.xib in Resources */,
+				451AFF5D1E13DC9F00C19756 /* ttt.gb in Resources */,
+				45806B5E1E1C8651002309AE /* 03-modify_timing.gb in Resources */,
+				451AFF371E13DC9F00C19756 /* 08-misc instrs.gb in Resources */,
+				451AFF361E13DC9F00C19756 /* 07-jr,jp,call,ret,rst.gb in Resources */,
+				45806B601E1C8AF7002309AE /* Kirby's Dream Land (USA, Europe).gb in Resources */,
+				451AFF331E13DC9F00C19756 /* 04-op r,imm.gb in Resources */,
+				451AFF321E13DC9F00C19756 /* 03-op sp,hl.gb in Resources */,
+				451AFF631E14031A00C19756 /* Super Mario Land.gb in Resources */,
+				451AFF341E13DC9F00C19756 /* 05-op rp.gb in Resources */,
+				45B7A5A01E155F680023B72D /* Legend of Zelda, The - Link's Awakening (USA, Europe).gb in Resources */,
+				451AFF391E13DC9F00C19756 /* 10-bit ops.gb in Resources */,
+				45806B6A1E1D40B1002309AE /* Killer Instinct (USA, Europe).gb in Resources */,
+				45806B5D1E1C8651002309AE /* 02-write_timing.gb in Resources */,
+				45806B621E1D0FF5002309AE /* Metroid II - Return of Samus (World).gb in Resources */,
+				45806B5C1E1C8651002309AE /* 01-read_timing.gb in Resources */,
+				451AFF381E13DC9F00C19756 /* 09-op r,r.gb in Resources */,
+				45806B661E1D3874002309AE /* Final Fantasy Legend II (USA).gb in Resources */,
+				451AFF5B1E13DC9F00C19756 /* opus5.gb in Resources */,
+				451AFF3A1E13DC9F00C19756 /* 11-op a,(hl).gb in Resources */,
+				451AFF311E13DC9F00C19756 /* 02-interrupts.gb in Resources */,
+				451AFF351E13DC9F00C19756 /* 06-ld r,r.gb in Resources */,
+				451AFF301E13DC9F00C19756 /* 01-special.gb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,8 +471,11 @@
 				45773F321BA3650000292B1C /* Window.swift in Sources */,
 				4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */,
 				45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */,
+				45B7A5A41E15793F0023B72D /* Screen.swift in Sources */,
+				45B7A5951E14528B0023B72D /* Timer.swift in Sources */,
 				45D9CC621B7FA3770035D540 /* Names.swift in Sources */,
-				45773F301BA364ED00292B1C /* ScreenView.swift in Sources */,
+				45806B551E1C4BC6002309AE /* Sound.swift in Sources */,
+				451AFF5F1E13E0A100C19756 /* ROMMenuItem.swift in Sources */,
 				45D9CC5A1B778E110035D540 /* CPU.swift in Sources */,
 				45D9CC5C1B778FC60035D540 /* Registers.swift in Sources */,
 				45D9CC5E1B78CDE30035D540 /* MMU.swift in Sources */,
@@ -380,6 +621,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = gbemu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;

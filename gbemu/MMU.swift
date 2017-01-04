@@ -8,7 +8,7 @@
 
 import Swift
 
-class MMU {
+final class MMU {
     var isInBios = true
     
     struct InterruptFlags {
@@ -39,22 +39,40 @@ class MMU {
     ]
     private var rom =  [Byte](repeating: 0, count: 0x8000)
     private var wram = [Byte](repeating: 0, count: 0x2000)
-    private var eram = [Byte](repeating: 0, count: 0x2000)
+    private var eram = [Byte](repeating: 0, count: 0x2000)//
     private var zram = [Byte](repeating: 0, count:   0x80)
     var iEnable = InterruptFlags()
     var iFlag = InterruptFlags()
     
     let system: Gameboy
     let gpu: GPU
+    var timer: Timer!
     
-    var interruptFlag: Byte {
-        get { return readByte(0xFF0F) }
-        set { writeByte(0xFF0F, value: newValue) }
+    enum CartridgeType: Byte {
+        case noMBC = 0, mbc1, mbcExternalRAM, mbcBattery
     }
+    
+    enum ExpansionMode {
+        case rom, ram
+    }
+    
+    var cartridgeType = CartridgeType.noMBC
+    var romOffset = 0x4000
+    var ramOffset = 0x0000
+    var romBank = 0
+    var ramBank = 0
+    var ramOn = false
+    var mode = ExpansionMode.rom
+    
+//    var interruptFlag: Byte {
+//        get { return readByte(0xFF0F) }
+//        set { writeByte(0xFF0F, value: newValue) }
+//    }
     
     init(system: Gameboy) {
         self.system = system
         gpu = system.gpu
+        timer = Timer(mmu: self)
     }
     
     func readByte(_ address: UInt16) -> Byte {
@@ -67,17 +85,21 @@ class MMU {
         
         switch (addressWord) {
             case 0x0000 ..< 0x4000: return rom[address]
-            case 0x4000 ..< 0x8000: return rom[address]
+            case 0x4000 ..< 0x8000: return rom[address & 0x3FFF + romOffset]
             
             case 0x8000 ..< 0xA000: return gpu.vram[address & 0x1FFF]
             
-            case 0xA000 ..< 0xC000: return eram[address & 0x1FFF]
+            case 0xA000 ..< 0xC000: return eram[address & 0x1FFF + ramOffset]
             
             case 0xC000 ..< 0xE000: return wram[address & 0x1FFF]
             
             case 0xE000 ..< 0xFE00: return wram[address & 0x1FFF]
             case 0xFE00 ..< 0xFEA0: return gpu.oam[address & 0xFF]
             case 0xFEA0 ..< 0xFF00: return 0
+            case 0xFF04: return timer.divider
+            case 0xFF05: return timer.counter
+            case 0xFF06: return timer.modulo
+            case 0xFF07: return timer.control
             case 0xFF0F: return iFlag.byte
             case 0xFFFF: return iEnable.byte
             case 0xFF00 ..< 0xFF80:
@@ -99,19 +121,64 @@ class MMU {
     func writeByte(_ address: UInt16, value: Byte) {
         let addressWord = address
         let address = Int(address)
+        
+        if address == 0xda12 {
+            
+        }
+        
         switch (addressWord) {
-            case 0x0000 ..< 0x4000: break
-            case 0x4000 ..< 0x8000: break
-                
+            case 0x0000 ..< 0x2000:
+                switch cartridgeType {
+                    case .noMBC, .mbc1: break
+                    case .mbcExternalRAM, .mbcBattery:
+                        ramOn = value & 0xA == 0xA
+                }
+            
+            case 0x2000 ..< 0x4000:
+                switch cartridgeType {
+                    case .noMBC: break
+                    case .mbc1, .mbcExternalRAM, .mbcBattery:
+                        //set lower 5 bits of the ROM bank, 0 is 1
+                        var val = Int(value) & 0x1F
+                        if val == 0 { val = 1 }
+                        romBank = romBank & 0x60 + val
+                        romOffset = romBank * 0x4000
+            }
+            
+            case 0x4000 ..< 0x6000:
+                switch cartridgeType {
+                    case .noMBC: break
+                    case .mbc1, .mbcExternalRAM, .mbcBattery:
+                        let val = Int(value) & 0b11
+                        if mode == .rom {
+                            romBank = romBank & 0x1F + val << 5
+                            romOffset = romBank * 0x4000
+                        } else {
+                            ramBank = val
+                            ramOffset = ramBank * 0x2000
+                        }
+                }
+            
+            case 0x6000 ..< 0x8000:
+                switch cartridgeType {
+                    case .noMBC, .mbc1: break
+                    case .mbcExternalRAM, .mbcBattery:
+                        mode = value == 0 ? .rom : .ram
+                }
+            
             case 0x8000 ..< 0xA000: gpu.vram[address & 0x1FFF] = value; gpu.updateTile(addressWord, value: value)
             
-            case 0xA000 ..< 0xC000: eram[address & 0x1FFF] = value
+            case 0xA000 ..< 0xC000: eram[address & 0x1FFF + ramOffset] = value
                 
             case 0xC000 ..< 0xE000: wram[address & 0x1FFF] = value
                 
             case 0xE000 ..< 0xFE00: wram[address & 0x1FFF] = value
             case 0xFE00 ..< 0xFEA0: gpu.oam[address & 0xFF] = value
             case 0xFEA0 ..< 0xFF00: break
+            case 0xFF04: timer.divider = 0
+            case 0xFF05: timer.counter = value
+            case 0xFF06: timer.modulo = value
+            case 0xFF07: timer.control = value
             case 0xFF0F: iFlag.byte = value
             case 0xFFFF: iEnable.byte = value
             case 0xFF00 ..< 0xFF80:
@@ -133,7 +200,10 @@ class MMU {
         writeByte(address &+ 1, value: Byte(value >> 8)) //help
     }
     
-    //Transfer dma from XX00-XX9F to FE00-FE9F
+    var dmaCounter = 9
+    //TODO Pause CPU?
+    //TODO Make faster
+    ///Transfer dma from XX00-XX9F to FE00-FE9F
     func transferDMA(_ value: Byte) {
         let from = Word(value) << 8
         let to = Word(0xFE00)
@@ -144,6 +214,12 @@ class MMU {
     
     func load(_ rom: [Byte]) {
         self.rom = rom
+        
+        if let type = CartridgeType(rawValue: rom[0x0147]) {
+            cartridgeType = type
+        } else {
+            fatalError("MBC type not implemented!")
+        }
     }
     
     deinit {
