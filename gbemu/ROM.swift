@@ -113,6 +113,9 @@ final class Cartridge {
             if saveBinaryFile("gbemusav/" + name + ".sav", location: .documentDirectory, buffer: ram) {
                 print("Successfully saved " + name + ".sav save file!")
             }
+            if saveBinaryFile("gbemusav/" + name + " backup.sav", location: .documentDirectory, buffer: ram) {
+                print("Plus backup file")
+            }
         }
     }
     

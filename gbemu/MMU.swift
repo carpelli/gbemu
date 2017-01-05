@@ -11,12 +11,21 @@ import Swift
 final class MMU {
     var isInBios = true
     
-    struct InterruptFlags {
-        var byte: Byte = 0
-        subscript(index: Byte) -> Bool {
-            get { return byte & (1 << index) != 0 } //ok?
-            set(value) { byte = value ? byte | 1 << index : byte & ~(1 << index) }
-        }
+//    struct InterruptFlags {
+//        var byte: Byte = 0
+//        subscript(index: Byte) -> Bool {
+//            get { return byte & (1 << index) != 0 } //ok?
+//            set(value) { byte = value ? byte | 1 << index : byte & ~(1 << index) }
+//        }
+//    }
+    
+    struct InterruptByte: OptionSet {
+        let rawValue: Byte
+        static let vBlank  = InterruptByte(rawValue: 0x01)
+        static let lcdStat = InterruptByte(rawValue: 0x02)
+        static let timer   = InterruptByte(rawValue: 0x04)
+        static let serial  = InterruptByte(rawValue: 0x08) //Not implemented
+        static let joypad  = InterruptByte(rawValue: 0x10)
     }
     
     private var bios: [Byte] = [
@@ -40,17 +49,17 @@ final class MMU {
     private var cartridge = Cartridge(data: [Byte](repeating: 0, count: 0x8000))
     private var wram = [Byte](repeating: 0, count: 0x2000)
     private var zram = [Byte](repeating: 0, count:   0x80)
-    var iEnable = InterruptFlags()
-    var iFlag = InterruptFlags()
+    var iEnable: InterruptByte = []
+    var iFlag: InterruptByte = []
     
     let system: Gameboy
     let gpu: GPU
-    var timer: Timer!
+    var timer: Timer
     
     init(system: Gameboy) {
         self.system = system
         gpu = system.gpu
-        timer = Timer(mmu: self)
+        timer = Timer(system: system)
     }
     
     func readByte(_ address: UInt16) -> Byte {
@@ -77,8 +86,8 @@ final class MMU {
             case 0xFF05: return timer.counter
             case 0xFF06: return timer.modulo
             case 0xFF07: return timer.control
-            case 0xFF0F: return iFlag.byte
-            case 0xFFFF: return iEnable.byte
+            case 0xFF0F: return iFlag.rawValue
+            case 0xFFFF: return iEnable.rawValue
             case 0xFF00 ..< 0xFF80:
                 if case 0xFF40 ..< 0xFF80 = addressWord {
                     return gpu.readByte(addressWord)
@@ -119,8 +128,8 @@ final class MMU {
             case 0xFF05: timer.counter = value
             case 0xFF06: timer.modulo = value
             case 0xFF07: timer.control = value
-            case 0xFF0F: iFlag.byte = value
-            case 0xFFFF: iEnable.byte = value
+            case 0xFF0F: iFlag = InterruptByte(rawValue: value)
+            case 0xFFFF: iEnable = InterruptByte(rawValue: value)
             case 0xFF00 ..< 0xFF80:
                 if case 0xFF40 ..< 0xFF80 = addressWord {
                     gpu.writeByte(addressWord, value: value)

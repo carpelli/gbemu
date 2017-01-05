@@ -102,29 +102,32 @@ final class CPU {
         return cycle
     }
     
+    func requestInterrupt(_ interrupt: MMU.InterruptByte) {
+        mmu.iFlag.insert(interrupt)
+    }
+    
     private func handleInterrupt() {
         guard enableInterrupts || halted else { return }
         
-        let iEnable = mmu.iEnable
-        let iFlag = mmu.iFlag
-        
-        let triggered = iEnable.byte & iFlag.byte
+        let triggered = mmu.iEnable.rawValue & mmu.iFlag.rawValue
         if triggered == 0 { return }
         
-        if halted && !enableInterrupts { halted = false; return }
-        halted = false
-        
-        enableInterrupts = false
-        mmu.iFlag.byte &= ~triggered
-        
-        PUSH(reg.pc) //TODO change back to switch?
-        if triggered & 0b00000001 > 0 { reg.pc = 0x40 } else
-        if triggered & 0b00000010 > 0 { reg.pc = 0x48 } else
-        if triggered & 0b00000100 > 0 { reg.pc = 0x50 } else
-        if triggered & 0b00001000 > 0 { reg.pc = 0x58 } else
-        if triggered & 0b00010000 > 0 { reg.pc = 0x60 }
-        
-        cycle += 3
+        if triggered != 0 {
+            if enableInterrupts {
+                enableInterrupts = false
+                mmu.iFlag = MMU.InterruptByte(rawValue: mmu.iFlag.rawValue & ~triggered)
+                
+                PUSH(reg.pc) //TODO try to use OptionSet more, performance?
+                if triggered & 0b00000001 > 0 { reg.pc = 0x40 } else
+                if triggered & 0b00000010 > 0 { reg.pc = 0x48 } else
+                if triggered & 0b00000100 > 0 { reg.pc = 0x50 } else
+                if triggered & 0b00001000 > 0 { reg.pc = 0x58 } else
+                if triggered & 0b00010000 > 0 { reg.pc = 0x60 }
+                
+                cycle += 3
+            }
+            halted = false
+        }
     }
     
     private func printDebug(_ oldPC: Word) {

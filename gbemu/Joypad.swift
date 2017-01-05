@@ -8,23 +8,18 @@
 
 import Swift
 
-protocol JoypadInput {
-    func connectToJoypad(_ joypad: Joypad)
-}
-
 class Joypad {
     enum Button {
         case a, b, select, start, right, left, up, down
     }
     
-    private let mmu: MMU
+    private let system: Gameboy
     
     private var rows: [Byte] = [0x0F, 0x0F]
     private var column: Byte = 0
     
-    init(input: JoypadInput, mmu: MMU) {
-        self.mmu = mmu
-        input.connectToJoypad(self)
+    init(system: Gameboy) {
+        self.system = system
     }
     
     func readByte() -> Byte {
@@ -50,7 +45,7 @@ class Joypad {
             case .up:     rows[1] &= 0b1011
             case .down:   rows[1] &= 0b0111
         }
-        mmu.iFlag[4] = true
+        system.cpu.requestInterrupt(.joypad)
     }
     
     func buttonUp(_ button: Button) {

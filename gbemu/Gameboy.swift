@@ -31,15 +31,13 @@ class Gameboy {
     typealias setTimerType = (DispatchTime, @escaping () -> ()) -> ()
     let setTimer: setTimerType
     
-    init(screen: GPUOutputReceiver, joypadInput: JoypadInput,
-         setTimer: @escaping setTimerType) {
-        
+    init(screen: GPUOutputReceiver, setTimer: @escaping setTimerType) {
         self.setTimer = setTimer
         self.screen = screen
         
         gpu = GPU(system: self, screen: screen)
-        cpu = CPU(system: self) // Can be better
-        joypad = Joypad(input: joypadInput, mmu: self.cpu.mmu)
+        cpu = CPU(system: self) // Can be better?
+        joypad = Joypad(system: self)
     }
     
     func reset() {

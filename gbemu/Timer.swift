@@ -7,7 +7,7 @@
 //
 
 final class Timer {
-    unowned let mmu: MMU // YES????
+    let system: Gameboy // YES????
     
     var divider: Byte = 0 //FF04
     var counter: Byte = 0 //FF05
@@ -20,8 +20,8 @@ final class Timer {
     var speed: Int { return Int(control) & 0b11 }
     var enabled: Bool { return control & 0b100 > 0 }
     
-    init(mmu: MMU) {
-        self.mmu = mmu
+    init(system: Gameboy) {
+        self.system = system
     }
     
     func increment(_ m: Int) {
@@ -47,7 +47,7 @@ final class Timer {
                 counter = counter &+ 1
                 if counter == 0 {
                     counter = modulo
-                    mmu.iFlag.byte |= 0b100
+                    system.cpu.requestInterrupt(.timer)
                 }
             }
         }

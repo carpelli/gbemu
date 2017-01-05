@@ -22,12 +22,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         for url in Bundle.main.urls(forResourcesWithExtension: "gb", subdirectory: nil)! {
             romList.addItem(ROMMenuItem(to: url, app: self))
         }
+        gameboy = Gameboy(screen: window.emuScreen) {
+            self.queue.asyncAfter(deadline: $0, execute: $1)
+        }
+        window.joypad = gameboy.joypad
     }
     
     func loadROM(_ rom: [Byte]) {
-        gameboy = gameboy ?? Gameboy(screen: window.emuScreen, joypadInput: window) {
-            self.queue.asyncAfter(deadline: $0, execute: $1)
-        }
         gameboy.stop()
         usleep(20000) //Fixme
         gameboy.reset()

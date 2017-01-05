@@ -95,7 +95,7 @@ final class GPU {
                     //Enter hblank
                     modeClock -= 43
                     mode = .hBlank
-                    if (intHBlankEnable) { system.cpu.mmu.iFlag[1] = true }
+                    if (intHBlankEnable) { system.cpu.requestInterrupt(.lcdStat) }
                     
                     //Write scanline to buffer
                     let start = DispatchTime.now()
@@ -109,18 +109,18 @@ final class GPU {
                 if modeClock > 51 {
                     modeClock -= 51
                     line += 1
-                    if (intCoEnable && line == lineCompare) { system.cpu.mmu.iFlag[1] = true }
+                    if (intCoEnable && line == lineCompare) { system.cpu.requestInterrupt(.lcdStat) }
                     
                     if line == 144 {
                         screen.putImageData(image)
 //                        print("total time rendering this frame is \(totalTime)ms")
                         totalTime = 0
                         mode = .vBlank
-                        if (intVBlankEnable) { system.cpu.mmu.iFlag[1] = true }
-                        system.cpu.mmu.iFlag[0] = true
+                        if (intVBlankEnable) { system.cpu.requestInterrupt(.lcdStat) }
+                        system.cpu.requestInterrupt(.vBlank)
                     } else {
                         mode = .oam
-                        if (intOAMEnable) { system.cpu.mmu.iFlag[1] = true }
+                        if (intOAMEnable) { system.cpu.requestInterrupt(.lcdStat) }
                     }
                 }
             //vblank
@@ -128,11 +128,11 @@ final class GPU {
                 if modeClock > 114 {
                     modeClock -= 114
                     line += 1
-                    if (intCoEnable && line == lineCompare) { system.cpu.mmu.iFlag[1] = true }
+                    if (intCoEnable && line == lineCompare) { system.cpu.requestInterrupt(.lcdStat) }
                     
                     if line == 154 {
                         mode = .oam
-                        if (intOAMEnable) { system.cpu.mmu.iFlag[1] = true }
+                        if (intOAMEnable) { system.cpu.requestInterrupt(.lcdStat) }
                         line = 0
                     }
                 }
