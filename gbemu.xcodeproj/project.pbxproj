@@ -36,6 +36,10 @@
 		45806B641E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B631E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb */; };
 		45806B661E1D3874002309AE /* Final Fantasy Legend II (USA).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B651E1D3874002309AE /* Final Fantasy Legend II (USA).gb */; };
 		45806B6A1E1D40B1002309AE /* Killer Instinct (USA, Europe).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B691E1D40B1002309AE /* Killer Instinct (USA, Europe).gb */; };
+		45806B6E1E1D5F54002309AE /* gejmboj.gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B6D1E1D5F54002309AE /* gejmboj.gb */; };
+		45806B701E1D6009002309AE /* oh.gb in Resources */ = {isa = PBXBuildFile; fileRef = 45806B6F1E1D6009002309AE /* oh.gb */; };
+		45806B731E1D81A7002309AE /* ROM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45806B721E1D81A7002309AE /* ROM.swift */; };
+		45806B751E1D9460002309AE /* FileIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45806B741E1D9460002309AE /* FileIO.swift */; };
 		4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4599DAB11E12DCB700A4EB65 /* OAM.swift */; };
 		45B7A5951E14528B0023B72D /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B7A5941E14528B0023B72D /* Timer.swift */; };
 		45B7A5981E14731A0023B72D /* Hangman (PD).gb in Resources */ = {isa = PBXBuildFile; fileRef = 45B7A5971E14731A0023B72D /* Hangman (PD).gb */; };
@@ -127,6 +131,10 @@
 		45806B631E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Kirby's Dream Land 2 (USA, Europe).gb"; sourceTree = "<group>"; };
 		45806B651E1D3874002309AE /* Final Fantasy Legend II (USA).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Final Fantasy Legend II (USA).gb"; sourceTree = "<group>"; };
 		45806B691E1D40B1002309AE /* Killer Instinct (USA, Europe).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Killer Instinct (USA, Europe).gb"; sourceTree = "<group>"; };
+		45806B6D1E1D5F54002309AE /* gejmboj.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = gejmboj.gb; sourceTree = "<group>"; };
+		45806B6F1E1D6009002309AE /* oh.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = oh.gb; sourceTree = "<group>"; };
+		45806B721E1D81A7002309AE /* ROM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ROM.swift; sourceTree = "<group>"; };
+		45806B741E1D9460002309AE /* FileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileIO.swift; sourceTree = "<group>"; };
 		4599DAB11E12DCB700A4EB65 /* OAM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
 		45B7A5941E14528B0023B72D /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		45B7A5971E14731A0023B72D /* Hangman (PD).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hangman (PD).gb"; sourceTree = "<group>"; };
@@ -186,6 +194,8 @@
 				45806B611E1D0FF5002309AE /* Metroid II - Return of Samus (World).gb */,
 				45806B651E1D3874002309AE /* Final Fantasy Legend II (USA).gb */,
 				45806B691E1D40B1002309AE /* Killer Instinct (USA, Europe).gb */,
+				45806B6D1E1D5F54002309AE /* gejmboj.gb */,
+				45806B6F1E1D6009002309AE /* oh.gb */,
 			);
 			path = roms;
 			sourceTree = "<group>";
@@ -277,6 +287,14 @@
 			path = mem_timing/individual;
 			sourceTree = "<group>";
 		};
+		45806B711E1D812F002309AE /* MBCs */ = {
+			isa = PBXGroup;
+			children = (
+				45806B721E1D81A7002309AE /* ROM.swift */,
+			);
+			name = MBCs;
+			sourceTree = "<group>";
+		};
 		45D9CC321B778DE10035D540 = {
 			isa = PBXGroup;
 			children = (
@@ -304,6 +322,7 @@
 				451AFF5E1E13E0A100C19756 /* ROMMenuItem.swift */,
 				45773F311BA3650000292B1C /* Window.swift */,
 				45B7A5A31E15793F0023B72D /* Screen.swift */,
+				45806B741E1D9460002309AE /* FileIO.swift */,
 				45D9CC401B778DE10035D540 /* Assets.xcassets */,
 				45D9CC421B778DE10035D540 /* MainMenu.xib */,
 				45D9CC451B778DE10035D540 /* Info.plist */,
@@ -323,6 +342,7 @@
 		45F367B21BA04B61002BF8BB /* emu */ = {
 			isa = PBXGroup;
 			children = (
+				45806B711E1D812F002309AE /* MBCs */,
 				45F367AE1BA048C4002BF8BB /* Joypad.swift */,
 				45D9CC591B778E110035D540 /* CPU.swift */,
 				45B7A5941E14528B0023B72D /* Timer.swift */,
@@ -419,6 +439,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45806B701E1D6009002309AE /* oh.gb in Resources */,
 				45D9CC411B778DE10035D540 /* Assets.xcassets in Resources */,
 				45B7A5981E14731A0023B72D /* Hangman (PD).gb in Resources */,
 				45806B641E1D1227002309AE /* Kirby's Dream Land 2 (USA, Europe).gb in Resources */,
@@ -450,6 +471,7 @@
 				451AFF311E13DC9F00C19756 /* 02-interrupts.gb in Resources */,
 				451AFF351E13DC9F00C19756 /* 06-ld r,r.gb in Resources */,
 				451AFF301E13DC9F00C19756 /* 01-special.gb in Resources */,
+				45806B6E1E1D5F54002309AE /* gejmboj.gb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,6 +489,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45806B731E1D81A7002309AE /* ROM.swift in Sources */,
 				45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */,
 				45773F321BA3650000292B1C /* Window.swift in Sources */,
 				4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */,
@@ -481,6 +504,7 @@
 				45D9CC5E1B78CDE30035D540 /* MMU.swift in Sources */,
 				45F367AF1BA048C4002BF8BB /* Joypad.swift in Sources */,
 				45D9CC601B7F7F6C0035D540 /* GPU.swift in Sources */,
+				45806B751E1D9460002309AE /* FileIO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

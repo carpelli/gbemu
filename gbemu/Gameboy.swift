@@ -48,7 +48,7 @@ class Gameboy {
     }
     
     func start(withRom rom: [Byte]) {
-        cpu.mmu.load(rom)
+        cpu.mmu.loadROM(data: rom)
         stopped = false
     }
     

@@ -37,9 +37,8 @@ final class MMU {
         0x21, 0x04, 0x01, 0x11, 0xA8, 0x00, 0x1A, 0x13, 0xBE, 0x20, 0xFE, 0x23, 0x7D, 0xFE, 0x34, 0x20,
         0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50
     ]
-    private var rom =  [Byte](repeating: 0, count: 0x8000)
+    private var cartridge = Cartridge(data: [Byte](repeating: 0, count: 0x8000))
     private var wram = [Byte](repeating: 0, count: 0x2000)
-    private var eram = [Byte](repeating: 0, count: 0x2000)//
     private var zram = [Byte](repeating: 0, count:   0x80)
     var iEnable = InterruptFlags()
     var iFlag = InterruptFlags()
@@ -47,27 +46,6 @@ final class MMU {
     let system: Gameboy
     let gpu: GPU
     var timer: Timer!
-    
-    enum CartridgeType: Byte {
-        case noMBC = 0, mbc1, mbcExternalRAM, mbcBattery
-    }
-    
-    enum ExpansionMode {
-        case rom, ram
-    }
-    
-    var cartridgeType = CartridgeType.noMBC
-    var romOffset = 0x4000
-    var ramOffset = 0x0000
-    var romBank = 0
-    var ramBank = 0
-    var ramOn = false
-    var mode = ExpansionMode.rom
-    
-//    var interruptFlag: Byte {
-//        get { return readByte(0xFF0F) }
-//        set { writeByte(0xFF0F, value: newValue) }
-//    }
     
     init(system: Gameboy) {
         self.system = system
@@ -84,12 +62,11 @@ final class MMU {
         }
         
         switch (addressWord) {
-            case 0x0000 ..< 0x4000: return rom[address]
-            case 0x4000 ..< 0x8000: return rom[address & 0x3FFF + romOffset]
+            case 0x0000 ..< 0x8000: return cartridge.readROM(address)
             
             case 0x8000 ..< 0xA000: return gpu.vram[address & 0x1FFF]
             
-            case 0xA000 ..< 0xC000: return eram[address & 0x1FFF + ramOffset]
+            case 0xA000 ..< 0xC000: return cartridge.readRAM(address & 0x1FFF)
             
             case 0xC000 ..< 0xE000: return wram[address & 0x1FFF]
             
@@ -127,48 +104,11 @@ final class MMU {
         }
         
         switch (addressWord) {
-            case 0x0000 ..< 0x2000:
-                switch cartridgeType {
-                    case .noMBC, .mbc1: break
-                    case .mbcExternalRAM, .mbcBattery:
-                        ramOn = value & 0xA == 0xA
-                }
-            
-            case 0x2000 ..< 0x4000:
-                switch cartridgeType {
-                    case .noMBC: break
-                    case .mbc1, .mbcExternalRAM, .mbcBattery:
-                        //set lower 5 bits of the ROM bank, 0 is 1
-                        var val = Int(value) & 0x1F
-                        if val == 0 { val = 1 }
-                        romBank = romBank & 0x60 + val
-                        romOffset = romBank * 0x4000
-            }
-            
-            case 0x4000 ..< 0x6000:
-                switch cartridgeType {
-                    case .noMBC: break
-                    case .mbc1, .mbcExternalRAM, .mbcBattery:
-                        let val = Int(value) & 0b11
-                        if mode == .rom {
-                            romBank = romBank & 0x1F + val << 5
-                            romOffset = romBank * 0x4000
-                        } else {
-                            ramBank = val
-                            ramOffset = ramBank * 0x2000
-                        }
-                }
-            
-            case 0x6000 ..< 0x8000:
-                switch cartridgeType {
-                    case .noMBC, .mbc1: break
-                    case .mbcExternalRAM, .mbcBattery:
-                        mode = value == 0 ? .rom : .ram
-                }
+            case 0x0000 ..< 0x8000: cartridge.writeROM(address, value: value)
             
             case 0x8000 ..< 0xA000: gpu.vram[address & 0x1FFF] = value; gpu.updateTile(addressWord, value: value)
             
-            case 0xA000 ..< 0xC000: eram[address & 0x1FFF + ramOffset] = value
+            case 0xA000 ..< 0xC000: cartridge.writeRAM(address & 0x1FFF, value: value)
                 
             case 0xC000 ..< 0xE000: wram[address & 0x1FFF] = value
                 
@@ -212,14 +152,8 @@ final class MMU {
         }
     }
     
-    func load(_ rom: [Byte]) {
-        self.rom = rom
-        
-        if let type = CartridgeType(rawValue: rom[0x0147]) {
-            cartridgeType = type
-        } else {
-            fatalError("MBC type not implemented!")
-        }
+    func loadROM(data: [Byte]) {
+        cartridge = Cartridge(data: data)
     }
     
     deinit {
