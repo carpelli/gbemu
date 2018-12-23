@@ -142,7 +142,7 @@ final class MMU {
     }
     
     func writeWord(_ address: UInt16, value: Word) {
-        writeByte(address, value: Byte(truncatingBitPattern: value))
+        writeByte(address, value: Byte(truncatingIfNeeded: value))
         writeByte(address &+ 1, value: Byte(value >> 8)) //help
     }
     

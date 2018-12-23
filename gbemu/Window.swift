@@ -24,7 +24,7 @@ class Window: NSWindow {
     
     override func keyUp(with theEvent: NSEvent) {
         switch Int(theEvent.keyCode) {
-            case kVK_Escape: NSApplication.shared().terminate(self)
+            case kVK_Escape: NSApplication.shared.terminate(self)
             case kVK_ANSI_P: togglePause()
             case let keyCode:
                 if let button = buttonForCode(keyCode) {

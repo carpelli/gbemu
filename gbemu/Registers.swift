@@ -43,22 +43,22 @@ struct Registers {
     
     var hl: Word {
         get { return (UInt16(h) << 8) | UInt16(l) }
-        set { h = Byte(newValue >> 8); l = Byte(truncatingBitPattern: newValue)}
+        set { h = Byte(newValue >> 8); l = Byte(truncatingIfNeeded: newValue)}
     }
     
     var bc: Word {
         get { return (UInt16(b) << 8) | UInt16(c) }
-        set { b = Byte(newValue >> 8); c = Byte(truncatingBitPattern: newValue)}
+        set { b = Byte(newValue >> 8); c = Byte(truncatingIfNeeded: newValue)}
     }
     
     var de: Word {
         get { return (UInt16(d) << 8) | UInt16(e) }
-        set { d = Byte(newValue >> 8); e = Byte(truncatingBitPattern: newValue)}
+        set { d = Byte(newValue >> 8); e = Byte(truncatingIfNeeded: newValue)}
     }
     
     var af: Word {
         get { return (UInt16(a) << 8) | UInt16(flags.byte) }
-        set { a = Byte(newValue >> 8); flags.byte = Byte(truncatingBitPattern: newValue)}
+        set { a = Byte(newValue >> 8); flags.byte = Byte(truncatingIfNeeded: newValue)}
     }
     
     init() {

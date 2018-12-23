@@ -1312,7 +1312,7 @@ final class CPU {
     ///Jump by signed n (two's complement)
     private func JR() {
         let e = Int8(bitPattern: fetchByte())
-        reg.pc = Word(truncatingBitPattern: Int32(reg.pc) + Int32(e))
+        reg.pc = Word(truncatingIfNeeded: Int32(reg.pc) + Int32(e))
     }
     
     ///Jump by signed n if flag is set
@@ -1409,7 +1409,7 @@ final class CPU {
         if a & 0x100 == 0x100 { reg.flags.C = true }
         
         a &= 0xFF
-        reg.a = Byte(truncatingBitPattern: a)
+        reg.a = Byte(truncatingIfNeeded: a)
         
         if a == 0 { reg.flags.Z = true }
     }

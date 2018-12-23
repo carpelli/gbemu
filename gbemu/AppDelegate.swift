@@ -47,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         if let url = dialog.url?.absoluteURL {
             loadROM(url: url)
-            NSDocumentController.shared().noteNewRecentDocumentURL(url)
+            NSDocumentController.shared.noteNewRecentDocumentURL(url)
         }
     }
     

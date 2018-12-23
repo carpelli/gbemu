@@ -247,7 +247,7 @@ final class Sound {
             }
             let newOscillator = AKOscillator(waveform: akTable)
             oscillators.append(newOscillator)
-            mixer.connect(newOscillator)
+            newOscillator.connect(to: mixer)
             changeOscillator(newOscillator)
             print("Added wave oscillator #\(waveTables.count)")
         }
@@ -263,9 +263,9 @@ final class Sound {
     
     init() {
         let mixer = AudioKit.output as! AKMixer
-        mixer.connect(channel1.oscillator)
-        mixer.connect(channel2.oscillator)
-        mixer.connect(waveChannel.mixer)
+        channel1.oscillator.connect(to: mixer)
+        channel2.oscillator.connect(to: mixer)
+        waveChannel.mixer.connect(to: mixer)
         channel1.oscillator.start()
         channel2.oscillator.start()
         

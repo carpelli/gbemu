@@ -234,7 +234,7 @@
 				TargetAttributes = {
 					45D9CC3A1B778DE10035D540 = {
 						CreatedOnToolsVersion = 7.0;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1010;
 					};
 					45D9CC491B778DE10035D540 = {
 						CreatedOnToolsVersion = 7.0;
@@ -387,7 +387,7 @@
 				"OTHER_LDFLAGS[arch=*]" = "-lc++";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0.1;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -436,7 +436,7 @@
 				"OTHER_LDFLAGS[arch=*]" = "-lc++";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0.1;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -455,7 +455,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -474,7 +475,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -487,7 +489,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemuTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gbemu.app/Contents/MacOS/gbemu";
 			};
 			name = Debug;
@@ -501,7 +503,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemuTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/gbemu.app/Contents/MacOS/gbemu";
 			};
 			name = Release;
