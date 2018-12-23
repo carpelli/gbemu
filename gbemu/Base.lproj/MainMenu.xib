@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,11 +15,9 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="gbemu" customModuleProvider="target">
             <connections>
-                <outlet property="romList" destination="j3V-tv-yj2" id="LZW-PP-vx4"/>
                 <outlet property="window" destination="pGl-eW-SOz" id="817-uU-r8p"/>
             </connections>
         </customObject>
-        <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
         <menu title="Main Menu" systemMenu="main" id="AYu-sK-qS6">
             <items>
                 <menuItem title="gbemu" id="1Xt-HY-uBw">
@@ -66,63 +64,31 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="File" id="AB1-eO-WFF">
+                <menuItem title="File" id="OMj-Re-D8m">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="File" id="HsH-Cf-kix">
+                    <menu key="submenu" title="File" id="aEf-XP-Qd8">
                         <items>
-                            <menuItem title="New" keyEquivalent="n" id="gdb-Rd-Qcv">
+                            <menuItem title="Open…" keyEquivalent="o" id="KHb-ct-4dI">
                                 <connections>
-                                    <action selector="newDocument:" target="-1" id="pt2-6a-dBS"/>
+                                    <action selector="openFile:" target="Voe-Tx-rLC" id="Sg0-4j-Cft"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Open…" keyEquivalent="o" id="PPy-B9-O7m">
-                                <connections>
-                                    <action selector="openDocument:" target="-1" id="YPR-MF-wE8"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Open Recent" id="YAX-hx-R25">
+                            <menuItem title="Open Recent" id="Ihe-fL-gaD">
                                 <modifierMask key="keyEquivalentModifierMask"/>
-                                <menu key="submenu" title="Open Recent" systemMenu="recentDocuments" id="HIs-h0-scW">
+                                <menu key="submenu" title="Open Recent" systemMenu="recentDocuments" id="F63-R2-WcF">
                                     <items>
-                                        <menuItem title="Clear Menu" id="r0I-x6-rhx">
+                                        <menuItem title="Clear Menu" id="n0b-ym-p7m">
                                             <connections>
-                                                <action selector="clearRecentDocuments:" target="-1" id="9bK-0f-CPR"/>
+                                                <action selector="clearRecentDocuments:" target="-1" id="FlY-c0-HzY"/>
                                             </connections>
                                         </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="hwd-10-ZgD"/>
-                            <menuItem title="Close" keyEquivalent="w" id="xYz-v9-5bQ">
+                            <menuItem isSeparatorItem="YES" id="JeU-R2-fvP"/>
+                            <menuItem title="Close" keyEquivalent="w" id="APC-3G-d73">
                                 <connections>
-                                    <action selector="performClose:" target="-1" id="UKF-i5-yY6"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Save" keyEquivalent="s" id="ptR-6f-Y0d">
-                                <connections>
-                                    <action selector="saveDocument:" target="-1" id="oey-YF-ZJ1"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Save As…" keyEquivalent="S" id="ZRA-vo-hIe">
-                                <connections>
-                                    <action selector="saveDocumentAs:" target="-1" id="o12-dR-55Q"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Revert to Saved" id="cQ1-J5-LGc">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="revertDocumentToSaved:" target="-1" id="A9s-yY-ILW"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="niC-MS-DxO"/>
-                            <menuItem title="Page Setup…" keyEquivalent="P" id="tbd-cg-lZQ">
-                                <connections>
-                                    <action selector="runPageLayout:" target="-1" id="iaK-Zf-J1Y"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Print…" keyEquivalent="p" id="2GV-wz-wwf">
-                                <connections>
-                                    <action selector="print:" target="-1" id="O18-Cc-c7D"/>
+                                    <action selector="performClose:" target="-1" id="G4U-Uu-A8L"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -184,12 +150,8 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="ROM" id="tgc-aB-y5s">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="ROM" id="j3V-tv-yj2"/>
-                </menuItem>
             </items>
-            <point key="canvasLocation" x="148" y="-12"/>
+            <point key="canvasLocation" x="148" y="-16"/>
         </menu>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="pGl-eW-SOz" customClass="Window" customModule="gbemu" customModuleProvider="target">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>

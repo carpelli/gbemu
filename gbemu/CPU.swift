@@ -34,18 +34,18 @@ final class CPU {
     
     let OPTIMES = [
         1, 3, 2, 2, 1, 1, 2, 1, 5, 2, 2, 2, 1, 1, 2, 1,
-        1, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1,
+        1, 3, 2, 2, 1, 1, 2, 1, 3, 2, 2, 2, 1, 1, 2, 1, // STOP timing?
         2, 3, 2, 2, 1, 1, 2, 1, 2, 2, 2, 2, 1, 1, 2, 1,
         2, 3, 2, 2, 3, 3, 3, 1, 2, 2, 2, 2, 1, 1, 2, 1,
         1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
         1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
         1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-        2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1,
+        2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, // HALT timing?
         1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
         1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
         1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
         1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-        2, 3, 3, 4, 3, 4, 2, 4, 2, 4, 3, 1, 3, 3, 2, 4,
+        2, 3, 3, 4, 3, 4, 2, 4, 2, 4, 3, 0, 3, 6, 2, 4, // CB timing
         2, 3, 3, 0, 3, 4, 2, 4, 2, 4, 3, 0, 3, 0, 2, 4,
         3, 3, 2, 0, 0, 4, 2, 4, 4, 1, 4, 0, 0, 0, 2, 4,
         3, 3, 2, 1, 0, 4, 2, 4, 3, 2, 4, 1, 0, 0, 2, 4,
@@ -73,17 +73,13 @@ final class CPU {
         
         cycle = 0
         
-        handleInterrupt()
-        oldPCs[pointer] = reg.pc
-        pointer = (pointer + 1) % 100
-        
-        if reg.pc == 0x79 {
+        if reg.pc == 0xC2E9 {
             
         }
         
-        if reg.pc == 0x89 {
-        
-        }
+        handleInterrupts()
+        oldPCs[pointer] = reg.pc
+        pointer = (pointer + 1) % 100
         
         ops += 1
         let oldPC = reg.pc
@@ -106,7 +102,7 @@ final class CPU {
         mmu.iFlag.insert(interrupt)
     }
     
-    private func handleInterrupt() {
+    private func handleInterrupts() {
         guard enableInterrupts || halted else { return }
         
         let triggered = mmu.iEnable.rawValue & mmu.iFlag.rawValue
@@ -124,7 +120,7 @@ final class CPU {
                 if triggered & 0b00001000 > 0 { reg.pc = 0x58 } else
                 if triggered & 0b00010000 > 0 { reg.pc = 0x60 }
                 
-                cycle += 3
+                cycle += 5
             }
             halted = false
         }
@@ -745,7 +741,7 @@ final class CPU {
     }
     
     private func STOP() {
-        //halted = true
+        //halted = true //FIXME
     }
     
     /*-------------------
@@ -1389,21 +1385,6 @@ final class CPU {
     }
     
     private func DAA() {
-//        var adjust: Byte = reg.flags.C ? 0x60 : 0x00
-//        if reg.flags.H {
-//            adjust |= 0x06
-//        }
-//        if !reg.flags.N {
-//            if reg.a & 0x0F > 0x09 { adjust |= 0x06 }
-//            if reg.a > 0x99 { adjust |= 0x60 }
-//            reg.a = reg.a &+ adjust
-//        } else {
-//            reg.a = reg.a &- adjust
-//        }
-//        
-//        reg.flags.Z = reg.a == 0
-//        reg.flags.H = false
-//        reg.flags.C = adjust > 0x60
         var a = Int(reg.a)
         
         if (!reg.flags.N) {

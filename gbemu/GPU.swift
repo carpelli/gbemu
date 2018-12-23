@@ -14,21 +14,19 @@ protocol GPUOutputReceiver {
 }
 
 let colors: [[Byte]] = [
-    [0, 0, 0],
-    [85, 85, 85],
+    [255, 255, 255],
     [170, 170, 170],
-    [255, 255, 255]
-].reversed()//???????
+    [85, 85, 85],
+    [0, 0, 0]
+]
 
 final class GPU {
     enum Mode: Byte {
         case hBlank = 0, vBlank, oam, vram
     }
     
-    var vram = [Byte](repeating: 0, count: 0x2000)
+    var vram = [Byte](repeating: 0xFF, count: 0x2000)
     var oam = OAM()
-    
-    var totalTime = 0.0
     
     var tileset =
     [[[Int]]](
@@ -83,59 +81,48 @@ final class GPU {
         
         switch mode {
             //OAM read mode, scanline active FIXME what happens during these modes
-            case .oam:
-                if modeClock > 20 {
-                    //Enter scanline mode 3
-                    modeClock -= 20
-                    mode = .vram
-                }
+            case .oam where modeClock > 20:
+                modeClock -= 20
+                mode = .vram
+            
             //VRAM read mode, scanline active
-            case .vram:
-                if modeClock > 43 {
-                    //Enter hblank
-                    modeClock -= 43
-                    mode = .hBlank
-                    if (intHBlankEnable) { system.cpu.requestInterrupt(.lcdStat) }
-                    
-                    //Write scanline to buffer
-                    let start = DispatchTime.now()
-                    renderScan()
-                    let end = DispatchTime.now()
-                    let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
-                    totalTime += Double(nanoTime)/1_000_000
-            }
+            case .vram where modeClock > 43:
+                modeClock -= 43
+                mode = .hBlank
+                if (intHBlankEnable) { system.cpu.requestInterrupt(.lcdStat) }
+                
+                //Write scanline to buffer
+                renderScan()
+            
             //hblank, after last hblank, push screen to bitmap
-            case .hBlank:
-                if modeClock > 51 {
-                    modeClock -= 51
-                    line += 1
-                    if (intCoEnable && line == lineCompare) { system.cpu.requestInterrupt(.lcdStat) }
-                    
-                    if line == 144 {
-                        screen.putImageData(image)
-//                        print("total time rendering this frame is \(totalTime)ms")
-                        totalTime = 0
-                        mode = .vBlank
-                        if (intVBlankEnable) { system.cpu.requestInterrupt(.lcdStat) }
-                        system.cpu.requestInterrupt(.vBlank)
-                    } else {
-                        mode = .oam
-                        if (intOAMEnable) { system.cpu.requestInterrupt(.lcdStat) }
-                    }
+            case .hBlank where modeClock > 51:
+                modeClock -= 51
+                line += 1
+                if (intCoEnable && line == lineCompare) { system.cpu.requestInterrupt(.lcdStat) }
+                
+                if line == 144 {
+                    screen.putImageData(image)
+                    mode = .vBlank
+                    if (intVBlankEnable) { system.cpu.requestInterrupt(.lcdStat) }
+                    system.cpu.requestInterrupt(.vBlank)
+                } else {
+                    mode = .oam
+                    if (intOAMEnable) { system.cpu.requestInterrupt(.lcdStat) }
                 }
+            
             //vblank
-            case .vBlank:
-                if modeClock > 114 {
-                    modeClock -= 114
-                    line += 1
-                    if (intCoEnable && line == lineCompare) { system.cpu.requestInterrupt(.lcdStat) }
-                    
-                    if line == 154 {
-                        mode = .oam
-                        if (intOAMEnable) { system.cpu.requestInterrupt(.lcdStat) }
-                        line = 0
-                    }
+            case .vBlank where modeClock > 114:
+                modeClock -= 114
+                line += 1
+                if (intCoEnable && line == lineCompare) { system.cpu.requestInterrupt(.lcdStat) }
+                
+                if line == 154 {
+                    mode = .oam
+                    if (intOAMEnable) { system.cpu.requestInterrupt(.lcdStat) }
+                    line = 0
                 }
+            
+            default: break
         }
     }
     
@@ -267,8 +254,6 @@ final class GPU {
                 tile += 256
             }
             
-//            tile = min(Int(line/8) * 20, 192)
-            
             for i in 0..<160 {
                 let color = bgPalette[tileset[tile][Int(y)][Int(x)]]
                 
@@ -278,7 +263,6 @@ final class GPU {
                 image[bitmapOffset + 0] = color[0]
                 image[bitmapOffset + 1] = color[1]
                 image[bitmapOffset + 2] = color[2]
-                //screen[bitmapOffset + 3] = colour[3]
                 bitmapOffset += 4
                 
                 //When this tile ends, read another
@@ -287,7 +271,6 @@ final class GPU {
                     x = 0
                     lineOffset = (lineOffset + 1) & 0x1F
                     tile = Int(vram[Int(mapOffset) + lineOffset])
-//                    tile = min(tile+1,383)
                     if bgTile == 0 && tile < 128 {
                         tile += 256
                     }

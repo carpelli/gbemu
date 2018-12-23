@@ -22,9 +22,9 @@
 		451AFF5B1E13DC9F00C19756 /* opus5.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF2C1E13DC9F00C19756 /* opus5.gb */; };
 		451AFF5C1E13DC9F00C19756 /* tetris.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF2D1E13DC9F00C19756 /* tetris.gb */; };
 		451AFF5D1E13DC9F00C19756 /* ttt.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF2E1E13DC9F00C19756 /* ttt.gb */; };
-		451AFF5F1E13E0A100C19756 /* ROMMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451AFF5E1E13E0A100C19756 /* ROMMenuItem.swift */; };
 		451AFF611E14019000C19756 /* drmario.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF601E14018B00C19756 /* drmario.gb */; };
 		451AFF631E14031A00C19756 /* Super Mario Land.gb in Resources */ = {isa = PBXBuildFile; fileRef = 451AFF621E1402E600C19756 /* Super Mario Land.gb */; };
+		4558DA071E3EAD3E008BDAE9 /* DocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4558DA061E3EAD3E008BDAE9 /* DocumentController.swift */; };
 		45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2D1BA364ED00292B1C /* AppDelegate.swift */; };
 		45773F321BA3650000292B1C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F311BA3650000292B1C /* Window.swift */; };
 		45806B551E1C4BC6002309AE /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45806B541E1C4BC6002309AE /* Sound.swift */; };
@@ -55,6 +55,7 @@
 		45D9CC5E1B78CDE30035D540 /* MMU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC5D1B78CDE30035D540 /* MMU.swift */; };
 		45D9CC601B7F7F6C0035D540 /* GPU.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC5F1B7F7F6C0035D540 /* GPU.swift */; };
 		45D9CC621B7FA3770035D540 /* Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC611B7FA3770035D540 /* Names.swift */; };
+		45E033A521CEC079006BD9CF /* AudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E033A421CEC079006BD9CF /* AudioKit.framework */; };
 		45F367AF1BA048C4002BF8BB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F367AE1BA048C4002BF8BB /* Joypad.swift */; };
 		45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FACF511BA34F1700576E25 /* Gameboy.swift */; };
 /* End PBXBuildFile section */
@@ -68,6 +69,19 @@
 			remoteInfo = gbemu;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		459FD3811E328CAA002B56BA /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		451AFEFD1E13DC9E00C19756 /* cpu_instrs.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = cpu_instrs.gb; sourceTree = "<group>"; };
@@ -117,9 +131,9 @@
 		451AFF2C1E13DC9F00C19756 /* opus5.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = opus5.gb; sourceTree = "<group>"; };
 		451AFF2D1E13DC9F00C19756 /* tetris.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = tetris.gb; sourceTree = "<group>"; };
 		451AFF2E1E13DC9F00C19756 /* ttt.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = ttt.gb; sourceTree = "<group>"; };
-		451AFF5E1E13E0A100C19756 /* ROMMenuItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ROMMenuItem.swift; sourceTree = "<group>"; };
 		451AFF601E14018B00C19756 /* drmario.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = drmario.gb; sourceTree = "<group>"; };
 		451AFF621E1402E600C19756 /* Super Mario Land.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Super Mario Land.gb"; sourceTree = "<group>"; };
+		4558DA061E3EAD3E008BDAE9 /* DocumentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentController.swift; sourceTree = "<group>"; };
 		45773F2D1BA364ED00292B1C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		45773F311BA3650000292B1C /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		45806B541E1C4BC6002309AE /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
@@ -136,6 +150,7 @@
 		45806B721E1D81A7002309AE /* ROM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ROM.swift; sourceTree = "<group>"; };
 		45806B741E1D9460002309AE /* FileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileIO.swift; sourceTree = "<group>"; };
 		4599DAB11E12DCB700A4EB65 /* OAM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
+		459BE68021CEBEA3003F1426 /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioKit.framework; path = "../../../../Downloads/AudioKit-macOS-3/AudioKit.framework"; sourceTree = "<group>"; };
 		45B7A5941E14528B0023B72D /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		45B7A5971E14731A0023B72D /* Hangman (PD).gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Hangman (PD).gb"; sourceTree = "<group>"; };
 		45B7A5991E14816E0023B72D /* instr_timing.gb */ = {isa = PBXFileReference; lastKnownFileType = file; path = instr_timing.gb; sourceTree = "<group>"; };
@@ -154,6 +169,7 @@
 		45D9CC5D1B78CDE30035D540 /* MMU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMU.swift; sourceTree = "<group>"; };
 		45D9CC5F1B7F7F6C0035D540 /* GPU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPU.swift; sourceTree = "<group>"; };
 		45D9CC611B7FA3770035D540 /* Names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Names.swift; sourceTree = "<group>"; };
+		45E033A421CEC079006BD9CF /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioKit.framework; path = "../../../../Downloads/AudioKit-macOS-2/AudioKit.framework"; sourceTree = "<group>"; };
 		45F367AE1BA048C4002BF8BB /* Joypad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Joypad.swift; sourceTree = "<group>"; };
 		45FACF511BA34F1700576E25 /* Gameboy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gameboy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,6 +179,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45E033A521CEC079006BD9CF /* AudioKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,12 +312,22 @@
 			name = MBCs;
 			sourceTree = "<group>";
 		};
+		459BE67F21CEBEA3003F1426 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				45E033A421CEC079006BD9CF /* AudioKit.framework */,
+				459BE68021CEBEA3003F1426 /* AudioKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		45D9CC321B778DE10035D540 = {
 			isa = PBXGroup;
 			children = (
 				45D9CC3D1B778DE10035D540 /* gbemu */,
 				45D9CC4D1B778DE10035D540 /* gbemuTests */,
 				45D9CC3C1B778DE10035D540 /* Products */,
+				459BE67F21CEBEA3003F1426 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -319,7 +346,7 @@
 				451AFEFB1E13DC9E00C19756 /* roms */,
 				45F367B21BA04B61002BF8BB /* emu */,
 				45773F2D1BA364ED00292B1C /* AppDelegate.swift */,
-				451AFF5E1E13E0A100C19756 /* ROMMenuItem.swift */,
+				4558DA061E3EAD3E008BDAE9 /* DocumentController.swift */,
 				45773F311BA3650000292B1C /* Window.swift */,
 				45B7A5A31E15793F0023B72D /* Screen.swift */,
 				45806B741E1D9460002309AE /* FileIO.swift */,
@@ -367,6 +394,7 @@
 				45D9CC371B778DE10035D540 /* Sources */,
 				45D9CC381B778DE10035D540 /* Frameworks */,
 				45D9CC391B778DE10035D540 /* Resources */,
+				459FD3811E328CAA002B56BA /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -401,7 +429,7 @@
 		45D9CC331B778DE10035D540 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Otis Carpay";
 				TargetAttributes = {
 					45D9CC3A1B778DE10035D540 = {
@@ -495,10 +523,10 @@
 				4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */,
 				45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */,
 				45B7A5A41E15793F0023B72D /* Screen.swift in Sources */,
+				4558DA071E3EAD3E008BDAE9 /* DocumentController.swift in Sources */,
 				45B7A5951E14528B0023B72D /* Timer.swift in Sources */,
 				45D9CC621B7FA3770035D540 /* Names.swift in Sources */,
 				45806B551E1C4BC6002309AE /* Sound.swift in Sources */,
-				451AFF5F1E13E0A100C19756 /* ROMMenuItem.swift in Sources */,
 				45D9CC5A1B778E110035D540 /* CPU.swift in Sources */,
 				45D9CC5C1B778FC60035D540 /* Registers.swift in Sources */,
 				45D9CC5E1B78CDE30035D540 /* MMU.swift in Sources */,
@@ -546,14 +574,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -593,14 +629,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -630,6 +674,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = gbemu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -645,9 +693,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = gbemu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				"OTHER_LDFLAGS[arch=*]" = "-lstdc++";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

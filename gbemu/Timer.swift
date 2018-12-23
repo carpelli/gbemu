@@ -9,16 +9,27 @@
 final class Timer {
     let system: Gameboy // YES????
     
-    var divider: Byte = 0 //FF04
-    var counter: Byte = 0 //FF05
-    var modulo: Byte  = 0 //FF06
-    var control: Byte = 0 //FF07
+    var divider: Byte = 0   //FF04
+    var counter: Byte = 0   //FF05
+    var modulo: Byte  = 0   //FF06
+    var control: Byte = 0 { //FF07
+        didSet {
+            switch control & 0b11 {
+                case 0: threshold = 256
+                case 1: threshold = 4
+                case 2: threshold = 16
+                case 3: threshold = 64
+                default: break
+            }
+            enabled = control.hasBit(2)
+        }
+    }
     
+    var threshold = 64
+    var enabled = true
+            
     private var internalDiv: Int = 0
     private var internalCount: Int = 0
-    
-    var speed: Int { return Int(control) & 0b11 }
-    var enabled: Bool { return control & 0b100 > 0 }
     
     init(system: Gameboy) {
         self.system = system
@@ -34,14 +45,6 @@ final class Timer {
         if enabled {
             internalCount += m
             
-            var threshold = 0
-            switch speed {
-                case 0: threshold = 256
-                case 1: threshold = 4
-                case 2: threshold = 16
-                case 3: threshold = 64
-                default: break
-            }
             while internalCount >= threshold {
                 internalCount -= threshold
                 counter = counter &+ 1

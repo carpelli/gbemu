@@ -16,7 +16,7 @@ final class Cartridge {
     }
     
     let rom: [Byte]
-    var ram = [Byte](repeating: 0, count: 0x8000)//
+    var ram = [Byte](repeating: 0, count: 0x8000)
     let mbc: MBC
     var mode = ExpansionMode.rom
     
@@ -25,6 +25,7 @@ final class Cartridge {
     var romOffset = 0x4000
     var ramOffset = 0x0000
     var romBank = 0
+    var romSize = 0
     var ramBank = 0
     var ramOn = false
     let ramSize: Int
@@ -35,6 +36,13 @@ final class Cartridge {
         if let type = MBC(rawValue: rom[0x0147]) {
             mbc = type
             ramSize = Int(rom[0x0149])
+            
+            let romSizeValue = rom[0x0148]
+            switch romSizeValue {
+                case 0...7:
+                    romSize = 2 << Int(romSizeValue)
+                default: fatalError()
+            }
             
             var name = ""
             for char in rom[0x0134...0x0143] {
@@ -75,9 +83,8 @@ final class Cartridge {
                     case .noMBC: break
                     case .mbc1, .mbcExternalRAM, .mbcBattery:
                         //set lower 5 bits of the ROM bank, 0 is 1
-                        var val = Int(value) & 0x1F
-                        if val == 0 { val = 1 }
-                        romBank = romBank & 0x60 + val
+                        let val = max(Int(value) & 0x1F, 1)
+                        romBank = (romBank & 0x60 + val) % romSize
                         romOffset = romBank * 0x4000
                 }
             case 0x4000 ..< 0x6000: //Set RAM bank or higher bits ROM bank
@@ -86,7 +93,7 @@ final class Cartridge {
                     case .mbc1, .mbcExternalRAM, .mbcBattery:
                         let val = Int(value) & 0b11
                         if mode == .rom {
-                            romBank = romBank & 0x1F + val << 5
+                            romBank = (romBank & 0x1F + val << 5) % romSize
                             romOffset = romBank * 0x4000
                         } else {
                             ramBank = val

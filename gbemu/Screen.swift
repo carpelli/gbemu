@@ -83,6 +83,8 @@ class Screen: NSOpenGLView, GPUOutputReceiver {
             }
         }
 //        textureData = data
-        needsDisplay = true
+        DispatchQueue.main.async { // Correct
+            self.needsDisplay = true
+        }
     }
 }

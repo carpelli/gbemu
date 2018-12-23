@@ -1,0 +1,7 @@
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
+/gbemu/roms
+AudioKit.framework
+GB.pdf

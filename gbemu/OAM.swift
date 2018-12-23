@@ -8,18 +8,18 @@
 
 struct OAM {
     struct SpriteObject {
-        var y = 0
-        var x = 0
-        var tile = 0
-        var options: Byte = 0
+        var y = 0xFF
+        var x = 0xFF
+        var tile = 0xFF
+        var options: Byte = 0xFF
         
         var priority: Bool { return options & 1 << 7 == 0 }
         var yFlip: Bool    { return options & 1 << 6 > 0 }
         var xFlip: Bool    { return options & 1 << 5 > 0 }
-        var palette: Bool { return options & 1 << 4 > 0 }
+        var palette: Bool  { return options & 1 << 4 > 0 }
     }
 
-    private(set) var oam = [Byte](repeating: 0, count: 0xA0)
+    private(set) var oam = [Byte](repeating: 0xFF, count: 0xA0)
     private(set) var objects = [SpriteObject](repeating: SpriteObject(), count: 40)
     
     subscript(index: Int) -> Byte {

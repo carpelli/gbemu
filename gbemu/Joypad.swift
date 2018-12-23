@@ -8,7 +8,7 @@
 
 import Swift
 
-class Joypad {
+final class Joypad {
     enum Button {
         case a, b, select, start, right, left, up, down
     }

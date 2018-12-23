@@ -11,14 +11,6 @@ import Swift
 final class MMU {
     var isInBios = true
     
-//    struct InterruptFlags {
-//        var byte: Byte = 0
-//        subscript(index: Byte) -> Bool {
-//            get { return byte & (1 << index) != 0 } //ok?
-//            set(value) { byte = value ? byte | 1 << index : byte & ~(1 << index) }
-//        }
-//    }
-    
     struct InterruptByte: OptionSet {
         let rawValue: Byte
         static let vBlank  = InterruptByte(rawValue: 0x01)
@@ -47,8 +39,8 @@ final class MMU {
         0xF5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xFB, 0x86, 0x20, 0xFE, 0x3E, 0x01, 0xE0, 0x50
     ]
     private var cartridge = Cartridge(data: [Byte](repeating: 0, count: 0x8000))
-    private var wram = [Byte](repeating: 0, count: 0x2000)
-    private var zram = [Byte](repeating: 0, count:   0x80)
+    private var wram = [Byte](repeating: 0xFF, count: 0x2000)
+    private var zram = [Byte](repeating: 0xFF, count:   0x80)
     var iEnable: InterruptByte = []
     var iFlag: InterruptByte = []
     
@@ -82,10 +74,15 @@ final class MMU {
             case 0xE000 ..< 0xFE00: return wram[address & 0x1FFF]
             case 0xFE00 ..< 0xFEA0: return gpu.oam[address & 0xFF]
             case 0xFEA0 ..< 0xFF00: return 0
+            
+            case 0xFF03: fatalError()
             case 0xFF04: return timer.divider
             case 0xFF05: return timer.counter
             case 0xFF06: return timer.modulo
-            case 0xFF07: return timer.control
+            case 0xFF07: return timer.control | 0xF8
+            
+            case 0xFF10 ..< 0xFF3F: return system.sound.readByte(address)
+            
             case 0xFF0F: return iFlag.rawValue
             case 0xFFFF: return iEnable.rawValue
             case 0xFF00 ..< 0xFF80:
@@ -108,10 +105,6 @@ final class MMU {
         let addressWord = address
         let address = Int(address)
         
-        if address == 0xda12 {
-            
-        }
-        
         switch (addressWord) {
             case 0x0000 ..< 0x8000: cartridge.writeROM(address, value: value)
             
@@ -124,10 +117,14 @@ final class MMU {
             case 0xE000 ..< 0xFE00: wram[address & 0x1FFF] = value
             case 0xFE00 ..< 0xFEA0: gpu.oam[address & 0xFF] = value
             case 0xFEA0 ..< 0xFF00: break
+            
             case 0xFF04: timer.divider = 0
             case 0xFF05: timer.counter = value
             case 0xFF06: timer.modulo = value
             case 0xFF07: timer.control = value
+            
+            case 0xFF10 ..< 0xFF3F: return system.sound.writeByte(address, value: value)
+            
             case 0xFF0F: iFlag = InterruptByte(rawValue: value)
             case 0xFFFF: iEnable = InterruptByte(rawValue: value)
             case 0xFF00 ..< 0xFF80:
