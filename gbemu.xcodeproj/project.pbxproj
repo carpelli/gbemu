@@ -101,14 +101,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		45806B711E1D812F002309AE /* MBCs */ = {
-			isa = PBXGroup;
-			children = (
-				45806B721E1D81A7002309AE /* ROM.swift */,
-			);
-			name = MBCs;
-			sourceTree = "<group>";
-		};
 		459BE67F21CEBEA3003F1426 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -140,15 +132,15 @@
 		45D9CC3D1B778DE10035D540 /* gbemu */ = {
 			isa = PBXGroup;
 			children = (
-				45F367B21BA04B61002BF8BB /* emu */,
+				45D9CC451B778DE10035D540 /* Info.plist */,
 				45773F2D1BA364ED00292B1C /* AppDelegate.swift */,
-				45773F311BA3650000292B1C /* Window.swift */,
+				45806B741E1D9460002309AE /* FileIO.swift */,
 				45E033AB21CFE211006BD9CF /* Panel.swift */,
 				45B7A5A31E15793F0023B72D /* Screen.swift */,
-				45806B741E1D9460002309AE /* FileIO.swift */,
+				45773F311BA3650000292B1C /* Window.swift */,
 				45D9CC401B778DE10035D540 /* Assets.xcassets */,
+				45F5A9CC21D66E08000AFD16 /* emu */,
 				45D9CC421B778DE10035D540 /* MainMenu.xib */,
-				45D9CC451B778DE10035D540 /* Info.plist */,
 			);
 			path = gbemu;
 			sourceTree = "<group>";
@@ -162,22 +154,38 @@
 			path = gbemuTests;
 			sourceTree = "<group>";
 		};
-		45F367B21BA04B61002BF8BB /* emu */ = {
+		45F5A9CC21D66E08000AFD16 /* emu */ = {
 			isa = PBXGroup;
 			children = (
-				45806B711E1D812F002309AE /* MBCs */,
-				45F367AE1BA048C4002BF8BB /* Joypad.swift */,
 				45D9CC591B778E110035D540 /* CPU.swift */,
-				45B7A5941E14528B0023B72D /* Timer.swift */,
-				45D9CC611B7FA3770035D540 /* Names.swift */,
-				45806B541E1C4BC6002309AE /* Sound.swift */,
-				45D9CC5D1B78CDE30035D540 /* MMU.swift */,
+				45FACF511BA34F1700576E25 /* Gameboy.swift */,
 				45D9CC5F1B7F7F6C0035D540 /* GPU.swift */,
+				45F367AE1BA048C4002BF8BB /* Joypad.swift */,
+				45D9CC5D1B78CDE30035D540 /* MMU.swift */,
+				45D9CC611B7FA3770035D540 /* Names.swift */,
 				4599DAB11E12DCB700A4EB65 /* OAM.swift */,
 				45D9CC5B1B778FC60035D540 /* Registers.swift */,
-				45FACF511BA34F1700576E25 /* Gameboy.swift */,
+				45B7A5941E14528B0023B72D /* Timer.swift */,
+				45F5A9CE21D66E6E000AFD16 /* APU */,
+				45F5A9CD21D66E51000AFD16 /* ROM */,
 			);
-			name = emu;
+			path = emu;
+			sourceTree = "<group>";
+		};
+		45F5A9CD21D66E51000AFD16 /* ROM */ = {
+			isa = PBXGroup;
+			children = (
+				45806B721E1D81A7002309AE /* ROM.swift */,
+			);
+			path = ROM;
+			sourceTree = "<group>";
+		};
+		45F5A9CE21D66E6E000AFD16 /* APU */ = {
+			isa = PBXGroup;
+			children = (
+				45806B541E1C4BC6002309AE /* Sound.swift */,
+			);
+			path = APU;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
