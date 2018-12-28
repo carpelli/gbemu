@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -15,6 +15,7 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="gbemu" customModuleProvider="target">
             <connections>
+                <outlet property="panel" destination="Cqh-HY-B3Q" id="cKc-sJ-F7P"/>
                 <outlet property="window" destination="pGl-eW-SOz" id="817-uU-r8p"/>
             </connections>
         </customObject>
@@ -104,6 +105,12 @@
                                     <action selector="toggleToolbarShown:" target="-1" id="BXY-wc-z0C"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Toggle Panel" id="PAg-PH-vdr">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="togglePanel:" target="Voe-Tx-rLC" id="Xdk-p7-A6O"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Customize Toolbar…" id="1UK-8n-QPP">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -153,11 +160,11 @@
             </items>
             <point key="canvasLocation" x="148" y="-16"/>
         </menu>
-        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="pGl-eW-SOz" customClass="Window" customModule="gbemu" customModuleProvider="target">
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="pGl-eW-SOz" customClass="Window" customModule="gbemu" customModuleProvider="target">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="109" y="138" width="480" height="432"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="800"/>
             <view key="contentView" id="YhN-Hm-oo5">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="432"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -178,5 +185,79 @@
             </connections>
             <point key="canvasLocation" x="208" y="264"/>
         </window>
+        <window title="Panel" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Cqh-HY-B3Q" customClass="Panel" customModule="gbemu" customModuleProvider="target">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="120" y="68" width="276" height="378"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="800"/>
+            <view key="contentView" id="BMY-hL-vHp">
+                <rect key="frame" x="0.0" y="0.0" width="276" height="378"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <box fixedFrame="YES" title="Audio" translatesAutoresizingMaskIntoConstraints="NO" id="5bF-gQ-PNx">
+                        <rect key="frame" x="17" y="250" width="242" height="108"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <view key="contentView" id="bFg-PD-9IR">
+                            <rect key="frame" x="3" y="3" width="236" height="90"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="vmC-TS-bkv">
+                                    <rect key="frame" x="18" y="54" width="116" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="1 (Tone/Sweep)" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="z5k-9T-t7G">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="check:" target="Cqh-HY-B3Q" id="LtT-Ad-jda"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" tag="2" translatesAutoresizingMaskIntoConstraints="NO" id="dOV-Qt-Uz1">
+                                    <rect key="frame" x="18" y="24" width="73" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="2 (Tone)" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="wAe-oJ-9Pj">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="check:" target="Cqh-HY-B3Q" id="ROE-Oo-MFl"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" tag="4" translatesAutoresizingMaskIntoConstraints="NO" id="ngg-MQ-m6f">
+                                    <rect key="frame" x="139" y="24" width="79" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="4 (Noise)" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="agD-6q-9Do">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="check:" target="Cqh-HY-B3Q" id="oVz-hP-vZd"/>
+                                    </connections>
+                                </button>
+                                <button verticalHuggingPriority="750" fixedFrame="YES" tag="3" translatesAutoresizingMaskIntoConstraints="NO" id="Akb-zq-e4L">
+                                    <rect key="frame" x="139" y="54" width="77" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="3 (Wave)" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="eD1-LR-QxJ">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="check:" target="Cqh-HY-B3Q" id="Spp-8t-QQO"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </view>
+                    </box>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="checkCh1" destination="vmC-TS-bkv" id="mAb-NG-dxu"/>
+                <outlet property="checkCh2" destination="dOV-Qt-Uz1" id="CX7-SU-11b"/>
+                <outlet property="checkNoise" destination="ngg-MQ-m6f" id="Mxy-yN-FPT"/>
+                <outlet property="checkWave" destination="Akb-zq-e4L" id="saU-hu-c5l"/>
+            </connections>
+            <point key="canvasLocation" x="726" y="214"/>
+        </window>
+        <userDefaultsController representsSharedInstance="YES" id="4jl-VE-AA3"/>
     </objects>
 </document>

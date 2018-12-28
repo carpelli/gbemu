@@ -10,9 +10,11 @@ import AudioKit
 
 final class Sound {
     var internalCount = 0
+    
     var channel1 = Channel(withSweep: true)
     var channel2 = Channel(withSweep: false)
     var waveChannel = Wave()
+    var togglePanel: TogglePanel
     
     var ioMap = [Byte](repeating: 0xFF, count: 0x100)
     var ioMapMasks: [Byte] = [
@@ -22,6 +24,38 @@ final class Sound {
         0xFF, 0xFF, 0x00, 0x00, 0xBF,
         0x00, 0x00, 0x70
     ]
+    
+    enum ChannelType: Int {
+        case ch1 = 1, ch2, wave
+    }
+    
+    class TogglePanel {
+        let mixers = [AKMixer(), AKMixer(), AKMixer()]
+        let ch1, ch2: Channel
+        let wave: Wave
+        
+        init(ch1: Channel, ch2: Channel, wave: Wave, output: AKMixer) {
+            self.ch1 = ch1
+            self.ch2 = ch2
+            self.wave = wave
+            
+            ch1.oscillator.connect(to: mixers[0])
+            ch2.oscillator.connect(to: mixers[1])
+            wave.mixer.connect(to: mixers[2])
+            
+            let finalMixer = AKMixer()
+            for mixer in mixers {
+                mixer.connect(to: finalMixer)
+            }
+            finalMixer.connect(to: output)
+        }
+        
+        func toggle(channel: ChannelType) {
+            let mixer = mixers[channel.rawValue - 1]
+            mixer.volume = 1 - mixer.volume
+            print(mixers.map { $0.volume })
+        }
+    }
     
     class Channel {
         struct Envelope {
@@ -109,6 +143,7 @@ final class Sound {
             sweep.enabled = withSweep
             oscillator.amplitude = 0
             oscillator.frequency = 131072/2048
+            oscillator.rampDuration = 0
         }
         
         func step() {
@@ -240,12 +275,13 @@ final class Sound {
                 }
             }
             waveTables.append(currentWaveTable)
-            var akTable = AKTable(count: 32)
+            let akTable = AKTable(count: 32)
             for i in 0..<16 {
                 akTable[i * 2] = Float(currentWaveTable[i] >> 4) / Float(15)
                 akTable[i * 2 + 1] = Float(currentWaveTable[i] & 0xF) / Float(15)
             }
             let newOscillator = AKOscillator(waveform: akTable)
+            newOscillator.rampDuration = 0
             oscillators.append(newOscillator)
             newOscillator.connect(to: mixer)
             changeOscillator(newOscillator)
@@ -262,14 +298,20 @@ final class Sound {
     }
     
     init() {
-        let mixer = AudioKit.output as! AKMixer
-        channel1.oscillator.connect(to: mixer)
-        channel2.oscillator.connect(to: mixer)
-        waveChannel.mixer.connect(to: mixer)
+        togglePanel = TogglePanel(
+            ch1: channel1,
+            ch2: channel2,
+            wave: waveChannel,
+            output: AudioKit.output as! AKMixer
+        )
         channel1.oscillator.start()
         channel2.oscillator.start()
         
         ioMapMasks.append(contentsOf: ioMap.dropFirst(ioMapMasks.count)) //FIXME
+    }
+    
+    func toggleChannel(_ channel: ChannelType) {
+        togglePanel.toggle(channel: channel)
     }
     
     func step(_ m: Int) {

@@ -20,7 +20,9 @@ final class CPU {
     var enableInterrupts = false
     var halted = false
     
-    var oldPCs = [Word](repeating: 0, count: 100)
+    var debugLog = [String](repeating: "", count: 10000)
+    
+    var oldPCs = [Word](repeating: 0, count: 10000)
     var pointer = 0
     func printPCs() {
         var array = Array(oldPCs.suffix(from: pointer))
@@ -62,10 +64,18 @@ final class CPU {
         return value
     }
     
+    private func n() -> Byte {
+        return fetchByte()
+    }
+    
     private func fetchWord() -> Word {
         let value = mmu.readWord(reg.pc)
         reg.pc += 2
         return value
+    }
+    
+    private func nn() -> Word {
+        return fetchWord()
     }
     
     func step() -> Int {
@@ -78,8 +88,17 @@ final class CPU {
         }
         
         handleInterrupts()
-        oldPCs[pointer] = reg.pc
-        pointer = (pointer + 1) % 100
+//        oldPCs[pointer] = reg.pc
+//        pointer = (pointer + 1) % 10000
+//        let str = debugString(reg.pc)
+//        debugLog[pointer] = str
+//        if (debug) {
+//            print(str)
+//        }
+//        if reg.pc == 0x1d95 {
+//            if (!debug) { printLog() }
+//            debug = true
+//        }
         
         ops += 1
         let oldPC = reg.pc
@@ -92,8 +111,6 @@ final class CPU {
         }
         
         mmu.timer.increment(cycle)
-        
-        if debug { printDebug(oldPC) }
         
         return cycle
     }
@@ -126,10 +143,11 @@ final class CPU {
         }
     }
     
-    private func printDebug(_ oldPC: Word) {
+    private func debugString(_ oldPC: Word) -> String {
         var pcAtOp = oldPC
         let opCode = mmu.readByte(pcAtOp)
-        var string: String = String(format: "%4X", ops) + " " +
+//        var string: String = String(format: "%4X", ops) + " " +
+        var string: String = String(mmu.cartridge.romBank) + " " +
             String(format: "%4X", pcAtOp) + " "
         string += String(format: "%3X", opCode) + " "
         
@@ -140,28 +158,26 @@ final class CPU {
             string += OPNAMES[Int(opCode)].padding(toLength: 11, withPad: " ", startingAt: 0)
         }
         
-        
-//        if reg.pc > pcAtOp {
-//            if (reg.pc - pcAtOp) > Word(2) {
-//                string += String(format: " %02X", mmu.readByte(pcAtOp + 2))
-//            } else {
-//                string += "   "
-//            }
-//            
-//            if (reg.pc - pcAtOp) > Word(1) {
-//                string += String(format: " %02X", mmu.readByte(pcAtOp + 1))
-//            } else {
-//                string += "   "
-//            }
-//        } else {
-//            string += "     "
-//        }
         string += String(format: " %02X", mmu.readByte(pcAtOp + 2))
         string += String(format: " %02X", mmu.readByte(pcAtOp + 1))
         
-        string += "  " + String(format: "%01X %02X %02X %02X %01X  ", reg.a, reg.bc, reg.de, reg.hl, reg.flags.byte)
+        string += "  " + String(format: "%04X %04X %04X %04X %04X", reg.af, reg.bc, reg.de, reg.hl, reg.sp)
         
-        print(string)
+        let indent = (0x10000-Int(reg.sp))/2-1
+        string =
+            "\(indent))" +
+            (indent < 10 ? " " : "") +
+            String(repeating: "  ", count: max(indent-1, 0)) +
+            string
+        
+        return string
+    }
+    
+    private func printLog() {
+        print(
+            debugLog[pointer+1..<10000].joined(separator: "\n") + "\n" +
+            debugLog[0...pointer].joined(separator: "\n")
+        )
     }
     
     private func call() {
@@ -172,12 +188,12 @@ final class CPU {
         
         switch opcode {
             case 0x00: NOP()
-            case 0x01: LD(&reg.bc)
+            case 0x01: LD(&reg.bc, nn())
             case 0x02: LD(reg.bc, reg.a)
             case 0x03: INC(&reg.bc)
             case 0x04: INC(&reg.b)
             case 0x05: DEC(&reg.b)
-            case 0x06: LD(&reg.b)
+            case 0x06: LD(&reg.b, n())
             case 0x07: RLCA()
             case 0x08: LD_nn_SP()
             case 0x09: ADD_HL(reg.bc)
@@ -185,16 +201,16 @@ final class CPU {
             case 0x0B: DEC(&reg.bc)
             case 0x0C: INC(&reg.c)
             case 0x0D: DEC(&reg.c)
-            case 0x0E: LD(&reg.c)
+            case 0x0E: LD(&reg.c, n())
             case 0x0F: RRCA()
                 
             case 0x10: STOP()
-            case 0x11: LD(&reg.de)
+            case 0x11: LD(&reg.de, nn())
             case 0x12: LD(reg.de, reg.a)
             case 0x13: INC(&reg.de)
             case 0x14: INC(&reg.d)
             case 0x15: DEC(&reg.d)
-            case 0x16: LD(&reg.d)
+            case 0x16: LD(&reg.d, n())
             case 0x17: RLA()
             case 0x18: JR()
             case 0x19: ADD_HL(reg.de)
@@ -202,16 +218,16 @@ final class CPU {
             case 0x1B: DEC(&reg.de)
             case 0x1C: INC(&reg.e)
             case 0x1D: DEC(&reg.e)
-            case 0x1E: LD(&reg.e)
+            case 0x1E: LD(&reg.e, n())
             case 0x1F: RRA()
                 
             case 0x20: JR(!reg.flags.Z)
-            case 0x21: LD(&reg.hl)
+            case 0x21: LD(&reg.hl, nn())
             case 0x22: LDI_HL_A()
             case 0x23: INC(&reg.hl)
             case 0x24: INC(&reg.h)
             case 0x25: DEC(&reg.h)
-            case 0x26: LD(&reg.h)
+            case 0x26: LD(&reg.h, n())
             case 0x27: DAA()
             case 0x28: JR(reg.flags.Z)
             case 0x29: ADD_HL(reg.hl)
@@ -219,16 +235,16 @@ final class CPU {
             case 0x2B: DEC(&reg.hl)
             case 0x2C: INC(&reg.l)
             case 0x2D: DEC(&reg.l)
-            case 0x2E: LD(&reg.l)
+            case 0x2E: LD(&reg.l, n())
             case 0x2F: CPL()
                 
             case 0x30: JR(!reg.flags.C)
-            case 0x31: LD(&reg.sp)
+            case 0x31: LD(&reg.sp, nn())
             case 0x32: LDD_HL_A()
             case 0x33: INC(&reg.sp)
             case 0x34: INC_HL()
             case 0x35: DEC_HL()
-            case 0x36: LD(reg.hl)
+            case 0x36: LD(reg.hl, n())
             case 0x37: SCF()
             case 0x38: JR(reg.flags.C)
             case 0x39: ADD_HL(reg.sp)
@@ -236,7 +252,7 @@ final class CPU {
             case 0x3B: DEC(&reg.sp)
             case 0x3C: INC(&reg.a)
             case 0x3D: DEC(&reg.a)
-            case 0x3E: LD(&reg.a)
+            case 0x3E: LD(&reg.a, n())
             case 0x3F: CCF()
                 
             case 0x40: LD(&reg.b, reg.b)
@@ -419,7 +435,7 @@ final class CPU {
             case 0xE7: RST(0x20)
             case 0xE8: ADD_SP()
             case 0xE9: JP_HL()
-            case 0xEA: LD_nn(reg.a)
+            case 0xEA: LD(nn(), reg.a)
             case 0xEB: __()
             case 0xEC: __()
             case 0xED: __()
@@ -436,7 +452,7 @@ final class CPU {
             case 0xF7: RST(0x30)
             case 0xF8: LD_HL_SP_e()
             case 0xF9: LD_SP_HL()
-            case 0xFA: LD_A_nn()
+            case 0xFA: LD(&reg.a, nn())
             case 0xFB: EI()
             case 0xFC: __()
             case 0xFD: __()
@@ -733,6 +749,7 @@ final class CPU {
     private func NOP() {}
     
     private func __() {
+        printLog()
         fatalError("Undefined instruction")
     }
     
@@ -741,6 +758,8 @@ final class CPU {
     }
     
     private func STOP() {
+        printLog()
+        fatalError()
         //halted = true //FIXME
     }
     
@@ -748,50 +767,31 @@ final class CPU {
         LOAD COMMANDS
     -------------------*/
     
-    ///Loads nn into register
-    private func LD(_ rr: inout Word) {
-        rr = fetchWord()
-        
+    //TODO Change more to reflect new notation (think about rr and dd and all)
+    
+    ///Loads byte into (address)
+    private func LD(_ dd: UInt16, _ b: Byte) {
+        mmu.writeByte(dd, value: b)
     }
     
-    ///Loads n into register
-    private func LD(_ r: inout Byte) {
-        r = fetchByte()
-    }
-    
-    ///Loads n into (register)
-    private func LD(_ rr: UInt16) {
-        mmu.writeByte(rr, value: fetchByte())
-    }
-    
-    ///Loads byte into (register)
-    private func LD(_ dd: UInt16, _ r: Byte) {
-        mmu.writeByte(dd, value: r)
-    }
-    
-    ///Loads (register) into register
+    ///Loads (address) into register
     private func LD(_ r: inout Byte, _ dd: UInt16) {
         r = mmu.readByte(dd)
     }
     
-    ///Loads register into register
-    private func LD(_ r1: inout Byte, _ r2: Byte) {
-        r1 = r2
+    ///Loads byte into register
+    private func LD(_ r: inout Byte, _ b: Byte) {
+        r = b
     }
     
-    ///Loads register into (nn)
-    private func LD_nn(_ r: Byte) {
-        mmu.writeByte(fetchWord(), value: r)
+    ///Loads word into registers
+    private func LD(_ rr: inout Word, _ ww: Word) {
+        rr = ww
     }
     
     ///Loads sp into (nn)
     private func LD_nn_SP() {
         mmu.writeWord(fetchWord(), value: reg.sp)
-    }
-    
-    ///Loads (nn) into register
-    private func LD_A_nn() {
-        reg.a = mmu.readByte(fetchWord())
     }
     
     ///Loads ($FF00 + c) into a
@@ -958,13 +958,13 @@ final class CPU {
     }
     
     ///Increase register by 1
-    private func INC(_ b: inout Byte) {
-        let r = b &+ 1
+    private func INC(_ r: inout Byte) {
+        let b = r &+ 1
         
-        reg.flags.Z = r == 0
+        reg.flags.Z = b == 0
         reg.flags.N = false
-        reg.flags.H = (r & 0xF) == 0
-        b = r
+        reg.flags.H = (b & 0xF) == 0
+        r = b
     }
     
     ///Increase register by 1
@@ -973,13 +973,13 @@ final class CPU {
     }
     
     ///Decrease register by 1
-    private func DEC(_ b: inout Byte) {
-        let r = b &- 1
+    private func DEC(_ r: inout Byte) {
+        let b = r &- 1
         
-        reg.flags.Z = r == 0
+        reg.flags.Z = b == 0
         reg.flags.N = true
-        reg.flags.H = (r & 0xF) == 0xF
-        b = r
+        reg.flags.H = (b & 0xF) == 0xF
+        r = b
     }
     
     ///Decrease register by 1
@@ -1254,9 +1254,7 @@ final class CPU {
     
     ///Set Z to NOT (register) at bit
     private func BIT(_ bit: Byte, _ rr: Word) {
-        let s = mmu.readByte(rr)
-        BIT(bit, s)
-        mmu.writeByte(rr, value: s)
+        BIT(bit, mmu.readByte(rr))
     }
     
     ///Set register at bit

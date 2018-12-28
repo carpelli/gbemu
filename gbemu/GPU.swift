@@ -236,11 +236,9 @@ final class GPU {
             
             //Which line of pixels to use in the tiles
             let y = (line &+ scanY) & 7
-//            let y = line & 7
             
             //Where in the tile line to start
             var x = scanX & 7
-//            var x = 0
             
             //Where to render on the bitmap
             var bitmapOffset = Int(line) * 160 * 4

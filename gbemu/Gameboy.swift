@@ -18,7 +18,7 @@ extension UnsignedInteger {
 }
 extension Byte {
     func hasBit(_ bit: Byte) -> Bool {
-        return self & 1 << bit > 0
+        return self & 1 << bit != 0
     }
 }
 

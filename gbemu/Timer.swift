@@ -11,7 +11,7 @@ final class Timer {
     
     var divider: Byte = 0   //FF04
     var counter: Byte = 0   //FF05
-    var modulo: Byte  = 0   //FF06
+    var modulo: Byte = 0   //FF06
     var control: Byte = 0 { //FF07
         didSet {
             switch control & 0b11 {

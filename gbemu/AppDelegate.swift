@@ -13,6 +13,7 @@ import AudioKit
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: Window!
+    @IBOutlet weak var panel: Panel!
     
     let queue = DispatchQueue(label: "queue")
     let group = DispatchGroup()
@@ -30,6 +31,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let rom = try? Data(contentsOf: url) else { return }
         
         gameboy.reset(withRom: [Byte](rom))
+        panel.sound = gameboy.sound
         gameboy.start()
     }
     
@@ -41,13 +43,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         dialog.allowedFileTypes = ["gb"]
         dialog.title = "Open ROM file..."
         
-        
         dialog.runModal()
-        
         
         if let url = dialog.url?.absoluteURL {
             loadROM(url: url)
             NSDocumentController.shared.noteNewRecentDocumentURL(url)
+        }
+    }
+    
+    @IBAction func togglePanel(_ sender: Any) {
+        if panel.isVisible {
+            panel.close()
+        } else {
+            panel.makeKeyAndOrderFront(sender)
         }
     }
     

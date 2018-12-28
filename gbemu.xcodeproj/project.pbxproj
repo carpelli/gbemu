@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4558DA071E3EAD3E008BDAE9 /* DocumentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4558DA061E3EAD3E008BDAE9 /* DocumentController.swift */; };
 		45773F2F1BA364ED00292B1C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F2D1BA364ED00292B1C /* AppDelegate.swift */; };
 		45773F321BA3650000292B1C /* Window.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45773F311BA3650000292B1C /* Window.swift */; };
 		45806B551E1C4BC6002309AE /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45806B541E1C4BC6002309AE /* Sound.swift */; };
@@ -26,6 +25,7 @@
 		45D9CC621B7FA3770035D540 /* Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D9CC611B7FA3770035D540 /* Names.swift */; };
 		45E033A921CFBDFC006BD9CF /* AudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45E033A821CFBDFC006BD9CF /* AudioKit.framework */; };
 		45E033AA21CFBDFC006BD9CF /* AudioKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 45E033A821CFBDFC006BD9CF /* AudioKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		45E033AC21CFE211006BD9CF /* Panel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E033AB21CFE211006BD9CF /* Panel.swift */; };
 		45F367AF1BA048C4002BF8BB /* Joypad.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F367AE1BA048C4002BF8BB /* Joypad.swift */; };
 		45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FACF511BA34F1700576E25 /* Gameboy.swift */; };
 /* End PBXBuildFile section */
@@ -55,14 +55,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		4558DA061E3EAD3E008BDAE9 /* DocumentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentController.swift; sourceTree = "<group>"; };
 		45773F2D1BA364ED00292B1C /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		45773F311BA3650000292B1C /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		45806B541E1C4BC6002309AE /* Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
 		45806B721E1D81A7002309AE /* ROM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ROM.swift; sourceTree = "<group>"; };
 		45806B741E1D9460002309AE /* FileIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileIO.swift; sourceTree = "<group>"; };
 		4599DAB11E12DCB700A4EB65 /* OAM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OAM.swift; sourceTree = "<group>"; };
-		459BE68021CEBEA3003F1426 /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioKit.framework; path = "../../../../Downloads/AudioKit-macOS-3/AudioKit.framework"; sourceTree = "<group>"; };
 		45B7A5941E14528B0023B72D /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		45B7A5A31E15793F0023B72D /* Screen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		45D9CC3B1B778DE10035D540 /* gbemu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gbemu.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,9 +75,9 @@
 		45D9CC5D1B78CDE30035D540 /* MMU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMU.swift; sourceTree = "<group>"; };
 		45D9CC5F1B7F7F6C0035D540 /* GPU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPU.swift; sourceTree = "<group>"; };
 		45D9CC611B7FA3770035D540 /* Names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Names.swift; sourceTree = "<group>"; };
-		45E033A421CEC079006BD9CF /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioKit.framework; path = "../../../../Downloads/AudioKit-macOS-2/AudioKit.framework"; sourceTree = "<group>"; };
 		45E033A621CFBD73006BD9CF /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioKit.framework; path = "../../../../Downloads/AudioKit-macOS/AudioKit.framework"; sourceTree = "<group>"; };
 		45E033A821CFBDFC006BD9CF /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AudioKit.framework; sourceTree = "<group>"; };
+		45E033AB21CFE211006BD9CF /* Panel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Panel.swift; sourceTree = "<group>"; };
 		45F367AE1BA048C4002BF8BB /* Joypad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Joypad.swift; sourceTree = "<group>"; };
 		45FACF511BA34F1700576E25 /* Gameboy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gameboy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,8 +113,6 @@
 			isa = PBXGroup;
 			children = (
 				45E033A621CFBD73006BD9CF /* AudioKit.framework */,
-				45E033A421CEC079006BD9CF /* AudioKit.framework */,
-				459BE68021CEBEA3003F1426 /* AudioKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -146,8 +142,8 @@
 			children = (
 				45F367B21BA04B61002BF8BB /* emu */,
 				45773F2D1BA364ED00292B1C /* AppDelegate.swift */,
-				4558DA061E3EAD3E008BDAE9 /* DocumentController.swift */,
 				45773F311BA3650000292B1C /* Window.swift */,
+				45E033AB21CFE211006BD9CF /* Panel.swift */,
 				45B7A5A31E15793F0023B72D /* Screen.swift */,
 				45806B741E1D9460002309AE /* FileIO.swift */,
 				45D9CC401B778DE10035D540 /* Assets.xcassets */,
@@ -292,11 +288,11 @@
 				4599DAB21E12DCB700A4EB65 /* OAM.swift in Sources */,
 				45FACF521BA34F1700576E25 /* Gameboy.swift in Sources */,
 				45B7A5A41E15793F0023B72D /* Screen.swift in Sources */,
-				4558DA071E3EAD3E008BDAE9 /* DocumentController.swift in Sources */,
 				45B7A5951E14528B0023B72D /* Timer.swift in Sources */,
 				45D9CC621B7FA3770035D540 /* Names.swift in Sources */,
 				45806B551E1C4BC6002309AE /* Sound.swift in Sources */,
 				45D9CC5A1B778E110035D540 /* CPU.swift in Sources */,
+				45E033AC21CFE211006BD9CF /* Panel.swift in Sources */,
 				45D9CC5C1B778FC60035D540 /* Registers.swift in Sources */,
 				45D9CC5E1B78CDE30035D540 /* MMU.swift in Sources */,
 				45F367AF1BA048C4002BF8BB /* Joypad.swift in Sources */,
@@ -425,6 +421,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -435,7 +432,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				"OTHER_LDFLAGS[arch=*]" = "-lc++";
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
@@ -469,7 +467,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = gbemu/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.otimoti.gbemu;

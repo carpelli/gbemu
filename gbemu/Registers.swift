@@ -8,7 +8,7 @@
 
 import Swift
 
-struct Registers {
+class Registers {
     struct Flags {
         var Z = false //Zero
         var N = false //Subtraction
