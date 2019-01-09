@@ -7,32 +7,40 @@
 //
 
 import Cocoa
-import AudioKit
+import SpriteKit
+import QuartzCore
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: Window!
     @IBOutlet weak var panel: Panel!
+    @IBOutlet weak var view: SKView!
     
-    let queue = DispatchQueue(label: "queue")
-    let group = DispatchGroup()
+    let player = AudioPlayer()
+    var displayLink: CVDisplayLink?
+    
     var gameboy: Gameboy!
-    let mixer = AKMixer()
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        AudioKit.output = mixer
-        gameboy = Gameboy(screen: window.emuScreen, queue: queue)
-        window.gameboy = gameboy
-        try! AudioKit.start()
+        window.makeFirstResponder(window)
     }
     
     func loadROM(url: URL) {
-        guard let rom = try? Data(contentsOf: url) else { return }
+        let scene = Scene()
         
+        gameboy = Gameboy(screen: scene)
+        window.gameboy = gameboy
+        guard let rom = try? Data(contentsOf: url) else { return }
         gameboy.reset(withRom: [Byte](rom))
-        panel.sound = gameboy.sound
-        gameboy.start()
+        self.player.start(with: self.gameboy.apu)
+        panel.apu = gameboy.apu
+
+        scene.gameboy = gameboy
+        view.showsFPS = true
+        view.showsNodeCount = true
+        view.presentScene(scene)
+        window.makeFirstResponder(window)
     }
     
     @IBAction func openFile(_ sender: Any) {
@@ -73,3 +81,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return true;
     }
 }
+
+func dumpDebug(fileName: String, content: String) {
+    if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+        
+        let fileURL = dir.appendingPathComponent(fileName)
+        
+        //writing
+        do {
+            try content.write(to: fileURL, atomically: false, encoding: .utf8)
+        }
+        catch {/* error handling here */}
+    }
+}
+
+//        let callback: CVDisplayLinkOutputCallback = { (
+//                displayLink: CVDisplayLink,
+//                inNow: UnsafePointer<CVTimeStamp>,
+//                inOutputTime: UnsafePointer<CVTimeStamp>,
+//                flagsIn: CVOptionFlags,
+//                flagsOut: UnsafeMutablePointer<CVOptionFlags>,
+//                displayLinkContext: UnsafeMutableRawPointer?
+//            ) -> CVReturn in
+//            let app = Unmanaged<AppDelegate>.fromOpaque(displayLinkContext!).takeUnretainedValue()
+//            app.gameboy.runFrame()
+//            app.window!.emuScreen.drawView()
+//            return kCVReturnSuccess
+//        }
+//        CVDisplayLinkCreateWithActiveCGDisplays(&displayLink)
+//        CVDisplayLinkSetOutputCallback(
+//            displayLink!,
+//            callback,
+//            UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque())
+//        )
+//        CVDisplayLinkStart(displayLink!)

@@ -10,7 +10,7 @@ import Cocoa
 
 class Panel: NSPanel {
     
-    weak var sound: Sound?
+    weak var apu: APU?
     
     @IBOutlet weak var checkCh1: NSButton!
     @IBOutlet weak var checkCh2: NSButton!
@@ -19,9 +19,9 @@ class Panel: NSPanel {
     
     @IBAction func check(_ sender: NSButton) {
         print(sender.tag)
-        print(sound != nil)
-        if let channel = Sound.ChannelType(rawValue: sender.tag) {
-            sound?.toggleChannel(channel)
+        print(apu != nil)
+        if let channel = Channel.Which(rawValue: sender.tag) {
+            apu?.toggleChannel(channel)
         }
     }
 }

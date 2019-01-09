@@ -6,8 +6,7 @@
 //  Copyright © 2015 Otis Carpay. All rights reserved.
 //
 
-import Dispatch
-import AudioKit
+import Cocoa
 
 typealias Byte = UInt8
 typealias Word = UInt16
@@ -15,10 +14,17 @@ extension UnsignedInteger {
     init(_ bool: Bool) {
         self.init(bool ? 1 : 0)
     }
-}
-extension Byte {
-    func hasBit(_ bit: Byte) -> Bool {
+    
+    func hasBit(_ bit: Int) -> Bool {
         return self & 1 << bit != 0
+    }
+    
+    func setBit<T: BinaryInteger>(_ bit: Int, value: T) -> Self {
+        if value == 0 {
+            return self & ~(1 << bit)
+        } else {
+            return self | 1 << bit
+        }
     }
 }
 
@@ -28,63 +34,45 @@ final class Gameboy {
     
     private(set) public var stopped = false
     private var inactive = true //Whether there is no thread running
-    let queue: DispatchQueue
     
     var cpu: CPU!
     var gpu: GPU!
-    var sound = Sound()
+    var apu = APU()
     
-    private let halfFrameTime = 1.0 / 120
-    private let halfFrameTicks = 1_048_576 / 120
+    private let frameTicks = 17556
     
-    init(screen: GPUOutputReceiver, queue: DispatchQueue) {
+    init(screen: GPUOutputReceiver) {
         self.screen = screen
-        self.queue = queue
         gpu = GPU(system: self, screen: screen)
         cpu = CPU(system: self) // Can be better?
         joypad = Joypad(system: self)
     }
     
     func reset(withRom rom: [Byte]) {
-        stop()
         while (!inactive) { usleep(1000) } //can this be better?
         
         print("\nReset-----------")
         gpu = GPU(system: self, screen: screen)
         cpu = CPU(system: self)
-        sound = Sound()
+        apu = APU()
         
         cpu.mmu.loadROM(data: rom)
     }
     
-    func start() {
-        if inactive {
-            stopped = false
-            run()
-        }
-    }
-    
-    func stop() {
-        stopped = true
-    }
-    
     var count = 0
     
-    private func run() {
+    func runFrame() {
         if !stopped {
             inactive = false
-            let nextTime = DispatchTime.now() + halfFrameTime
             
-            while count < halfFrameTicks {
+            while count < frameTicks {
                 let m = cpu.step()
                 gpu.step(m)
-                sound.step(m)
+                apu.step(m)
                 count += m
             }
             
-            count -= halfFrameTicks
-            
-            self.queue.asyncAfter(deadline: nextTime, execute: run)
+            count -= frameTicks
         } else {
             inactive = true
         }

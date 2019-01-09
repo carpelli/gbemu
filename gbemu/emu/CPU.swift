@@ -83,7 +83,7 @@ final class CPU {
         
         cycle = 0
         
-        if reg.pc == 0xC2E9 {
+        if reg.pc == 0x080 {
             
         }
         
@@ -95,7 +95,7 @@ final class CPU {
 //        if (debug) {
 //            print(str)
 //        }
-//        if reg.pc == 0x1d95 {
+//        if reg.pc == 0x80 {
 //            if (!debug) { printLog() }
 //            debug = true
 //        }

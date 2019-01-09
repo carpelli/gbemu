@@ -7,7 +7,6 @@
 //
 
 import Cocoa
-import AudioKit
 import Carbon.HIToolbox.Events
 
 class Window: NSWindow {
@@ -35,14 +34,6 @@ class Window: NSWindow {
     
     private func togglePause() {
         guard let gameboy = gameboy else { return }
-        
-        if gameboy.stopped {
-            (AudioKit.output as? AKMixer)?.volume = 1
-            gameboy.start()
-        } else {
-            gameboy.stop()
-            (AudioKit.output as? AKMixer)?.volume = 0
-        }
     }
     
     private func buttonForCode(_ keyCode: Int) -> Joypad.Button? {

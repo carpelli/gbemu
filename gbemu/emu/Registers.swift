@@ -8,6 +8,8 @@
 
 import Swift
 
+// TODO Needs to be a struct -> think about exclusive access
+
 class Registers {
     struct Flags {
         var Z = false //Zero
@@ -70,8 +72,19 @@ class Registers {
         h = 0x01
         l = 0x4D
         flags.byte = 0xB0
-        
+
         pc = 0x100
         sp = 0xFFFE
+//        a = 0xFF
+//        b = 0xFF
+//        c = 0xFF
+//        d = 0xFF
+//        e = 0xFF
+//        h = 0xFF
+//        l = 0xFF
+//        flags.byte = 0xFF
+//        
+//        pc = 0x0
+//        sp = 0xFFFE
     }
 }

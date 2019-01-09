@@ -16,6 +16,7 @@
         <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="gbemu" customModuleProvider="target">
             <connections>
                 <outlet property="panel" destination="Cqh-HY-B3Q" id="cKc-sJ-F7P"/>
+                <outlet property="view" destination="YhN-Hm-oo5" id="qeD-7g-BLG"/>
                 <outlet property="window" destination="pGl-eW-SOz" id="817-uU-r8p"/>
             </connections>
         </customObject>
@@ -162,27 +163,13 @@
         </menu>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="pGl-eW-SOz" customClass="Window" customModule="gbemu" customModuleProvider="target">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="109" y="138" width="480" height="432"/>
+            <rect key="contentRect" x="450" y="0.0" width="480" height="432"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="800"/>
-            <view key="contentView" id="YhN-Hm-oo5">
+            <value key="minSize" type="size" width="160" height="144"/>
+            <view key="contentView" id="YhN-Hm-oo5" customClass="SKView">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="432"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <openGLView useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pGA-hc-Xkh" customClass="Screen" customModule="gbemu" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="432"/>
-                    </openGLView>
-                </subviews>
-                <constraints>
-                    <constraint firstAttribute="bottom" secondItem="pGA-hc-Xkh" secondAttribute="bottom" id="2S3-aa-KP0"/>
-                    <constraint firstItem="pGA-hc-Xkh" firstAttribute="top" secondItem="YhN-Hm-oo5" secondAttribute="top" id="S72-vc-CFR"/>
-                    <constraint firstAttribute="trailing" secondItem="pGA-hc-Xkh" secondAttribute="trailing" id="Sic-QF-ZfA"/>
-                    <constraint firstItem="pGA-hc-Xkh" firstAttribute="leading" secondItem="YhN-Hm-oo5" secondAttribute="leading" id="pt0-Wg-3lc"/>
-                </constraints>
             </view>
-            <connections>
-                <outlet property="emuScreen" destination="pGA-hc-Xkh" id="vD9-4b-G2e"/>
-            </connections>
             <point key="canvasLocation" x="208" y="264"/>
         </window>
         <window title="Panel" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="Cqh-HY-B3Q" customClass="Panel" customModule="gbemu" customModuleProvider="target">
@@ -259,5 +246,20 @@
             <point key="canvasLocation" x="726" y="214"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="4jl-VE-AA3"/>
+        <view id="OPD-QO-TSb">
+            <rect key="frame" x="0.0" y="0.0" width="480" height="432"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <openGLView wantsLayer="YES" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="daz-06-k9r" customClass="Screen" customModule="gbemu" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="480" height="432"/>
+                </openGLView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="daz-06-k9r" firstAttribute="top" secondItem="OPD-QO-TSb" secondAttribute="top" id="1SM-r1-App"/>
+                <constraint firstAttribute="trailing" secondItem="daz-06-k9r" secondAttribute="trailing" id="HBI-7v-qo5"/>
+                <constraint firstItem="daz-06-k9r" firstAttribute="leading" secondItem="OPD-QO-TSb" secondAttribute="leading" id="Hzb-jX-n22"/>
+                <constraint firstAttribute="bottom" secondItem="daz-06-k9r" secondAttribute="bottom" id="tg1-a6-wHj"/>
+            </constraints>
+        </view>
     </objects>
 </document>

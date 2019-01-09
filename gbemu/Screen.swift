@@ -7,7 +7,7 @@
 //
 
 import Cocoa
-import GLUT
+import OpenGL.GL
 
 class Screen: NSOpenGLView, GPUOutputReceiver {
     
@@ -21,6 +21,26 @@ class Screen: NSOpenGLView, GPUOutputReceiver {
     required init?(coder aDecoder: NSCoder) {
         textureData = [GLubyte](repeating: GLubyte(255), count: Int(texSize*texSize)*4)
         super.init(coder: aDecoder)
+        let attrs: [NSOpenGLPixelFormatAttribute] = [
+            NSOpenGLPixelFormatAttribute(NSOpenGLPFAAccelerated),
+            NSOpenGLPixelFormatAttribute(NSOpenGLPFADoubleBuffer),
+            NSOpenGLPixelFormatAttribute(NSOpenGLPFAColorSize), 32,
+            NSOpenGLPixelFormatAttribute(NSOpenGLPFAOpenGLProfile), NSOpenGLPixelFormatAttribute(NSOpenGLProfileVersion3_2Core),
+            0
+        ]
+        guard let pixelFormat = NSOpenGLPixelFormat(attributes: attrs) else {
+            print("Pixel format could not be constructed.")
+            return nil
+        }
+        self.pixelFormat = pixelFormat
+        guard let context = NSOpenGLContext(format: pixelFormat, share: nil) else {
+            print("Context could not be constructed.")
+            return nil
+        }
+        self.openGLContext = context
+        
+        //  Set the context's swap interval parameter to 60Hz (i.e. 1 frame per swamp)
+        self.openGLContext?.setValues([1], for: .swapInterval)
     }
     
     override var needsPanelToBecomeKey: Bool{
@@ -50,6 +70,23 @@ class Screen: NSOpenGLView, GPUOutputReceiver {
     }
     
     override func draw(_ dirtyRect: NSRect) {
+        drawView()
+    }
+    
+    func drawView() {
+//          Grab a context, make it the active context for drawing, and then lock the focus
+//          before making OpenGL calls that change state or data within objects.
+        guard let context = self.openGLContext else {
+            //  Just a filler error
+            Swift.print("oops")
+            return // todo return error?
+        }
+
+        context.makeCurrentContext()
+//        context.lock()
+        
+        CGLLockContext(context.cglContextObj!)
+        
         glClearColor(0, 0, 0, 0);
         glClear(UInt32(GL_COLOR_BUFFER_BIT))
         
@@ -69,7 +106,11 @@ class Screen: NSOpenGLView, GPUOutputReceiver {
         glEnd();
         
         glDisable(UInt32(GL_TEXTURE_2D))
-        glFlush();
+        
+//        context.flushBuffer()
+//        context.unlock()
+        CGLFlushDrawable(context.cglContextObj!)
+        CGLUnlockContext(context.cglContextObj!)
     }
     
     func putImageData(_ data: [Byte]) {
@@ -83,8 +124,5 @@ class Screen: NSOpenGLView, GPUOutputReceiver {
             }
         }
 //        textureData = data
-        DispatchQueue.main.async { // Correct
-            self.needsDisplay = true
-        }
     }
 }
