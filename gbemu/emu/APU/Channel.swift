@@ -95,7 +95,7 @@ class Channel {
     }
     
     func stepModulators() {
-        if timer != 0 || !enableTimer {
+        if timer > 0 || !enableTimer {
             volume = envelope?.step(volume) ?? volume
             if enableTimer { timer -= 1 }
         } else {
@@ -107,7 +107,7 @@ class Channel {
         envelope?.count = 0
         if envelope != nil { volume = Double(initialVolume) / 15 }
         enabled = true
-        //frequencyTimer = 0
+        frequencyTimer = 0
         if timer == 0 {
             timer = multiplier == 1 ? 64 : 256 // fixme
         }
@@ -120,6 +120,7 @@ class Channel {
             initialVolume = Int(value >> 4)
             envelope?.mode = value.hasBit(3) ? .increase : .decrease
             envelope?.period = Int(value & 0x7)
+            enabled = initialVolume != 0 || envelope?.mode == .increase
         case 3:
             frequency = frequency & 0x700 | Int(value)
         case 4:

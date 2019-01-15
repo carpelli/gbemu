@@ -85,7 +85,7 @@
 		45D9CC5D1B78CDE30035D540 /* MMU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMU.swift; sourceTree = "<group>"; };
 		45D9CC5F1B7F7F6C0035D540 /* GPU.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GPU.swift; sourceTree = "<group>"; };
 		45D9CC611B7FA3770035D540 /* Names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Names.swift; sourceTree = "<group>"; };
-		45E033A621CFBD73006BD9CF /* AudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioKit.framework; path = "../../../../Downloads/AudioKit-macOS/AudioKit.framework"; sourceTree = "<group>"; };
+		45DCEACF21EE7CF500584187 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		45E033AB21CFE211006BD9CF /* Panel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Panel.swift; sourceTree = "<group>"; };
 		45F367AE1BA048C4002BF8BB /* Joypad.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Joypad.swift; sourceTree = "<group>"; };
 		45F5A9CF21D67294000AFD16 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
@@ -113,7 +113,6 @@
 		459BE67F21CEBEA3003F1426 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				45E033A621CFBD73006BD9CF /* AudioKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -121,6 +120,7 @@
 		45D9CC321B778DE10035D540 = {
 			isa = PBXGroup;
 			children = (
+				45DCEACF21EE7CF500584187 /* README.md */,
 				45D9CC3D1B778DE10035D540 /* gbemu */,
 				45D9CC4D1B778DE10035D540 /* gbemuTests */,
 				45D9CC3C1B778DE10035D540 /* Products */,
@@ -410,7 +410,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				"OTHER_LDFLAGS[arch=*]" = "-lc++";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -460,7 +459,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				"OTHER_LDFLAGS[arch=*]" = "-lc++";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

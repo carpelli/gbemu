@@ -10,7 +10,6 @@ import Cocoa
 import Carbon.HIToolbox.Events
 
 class Window: NSWindow {
-    
     @IBOutlet weak var emuScreen: Screen!
     
     weak var gameboy: Gameboy?

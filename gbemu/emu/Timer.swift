@@ -11,7 +11,7 @@ final class Timer {
     
     var divider: Byte = 0   //FF04
     var counter: Byte = 0   //FF05
-    var modulo: Byte = 0   //FF06
+    var modulo: Byte = 0    //FF06
     var control: Byte = 0 { //FF07
         didSet {
             switch control & 0b11 {
@@ -53,6 +53,26 @@ final class Timer {
                     system.cpu.requestInterrupt(.timer)
                 }
             }
+        }
+    }
+    
+    func readByte(_ address: Int) -> Byte {
+        switch address {
+            case 0xFF04: return divider
+            case 0xFF05: return counter
+            case 0xFF06: return modulo
+            case 0xFF07: return control | 0xF8
+        default: fatalError()
+        }
+    }
+    
+    func writeByte(_ address: Int, value: Byte) {
+        switch address {
+            case 0xFF04: (divider, internalCount) = (0, 0)
+            case 0xFF05: counter = value
+            case 0xFF06: modulo = value
+            case 0xFF07: control = value
+            default: fatalError()
         }
     }
 }

@@ -20,17 +20,11 @@ final class CPU {
     var enableInterrupts = false
     var halted = false
     
-    var debugLog = [String](repeating: "", count: 10000)
+    var pcLog = [(pc: Word, sp: Word)](repeating: (0, 0), count: 1000)
     
-    var oldPCs = [Word](repeating: 0, count: 10000)
+    var oldPCs = [Word](repeating: 0, count: 1000)
     var pointer = 0
-    func printPCs() {
-        var array = Array(oldPCs.suffix(from: pointer))
-        array.append(contentsOf: oldPCs.prefix(upTo: pointer))
-        for element in array {
-            print(String(format: "%04x", element))
-        }
-    }
+    var willPrint = false
     
     var ops = 0
     
@@ -83,15 +77,14 @@ final class CPU {
         
         cycle = 0
         
-        if reg.pc == 0x080 {
+        if reg.pc == 0xc2ed {
             
         }
         
         handleInterrupts()
-//        oldPCs[pointer] = reg.pc
-//        pointer = (pointer + 1) % 10000
-//        let str = debugString(reg.pc)
-//        debugLog[pointer] = str
+        oldPCs[pointer] = reg.pc
+        pointer = (pointer + 1) % 1000
+        pcLog[pointer] = (reg.pc, reg.sp)
 //        if (debug) {
 //            print(str)
 //        }
@@ -99,9 +92,11 @@ final class CPU {
 //            if (!debug) { printLog() }
 //            debug = true
 //        }
+//        if willPrint {
+//            printLog()
+//        }
         
         ops += 1
-        let oldPC = reg.pc
         
         if !halted {
             call()
@@ -143,8 +138,8 @@ final class CPU {
         }
     }
     
-    private func debugString(_ oldPC: Word) -> String {
-        var pcAtOp = oldPC
+    private func debugString(pc: Word, sp: Word) -> String {
+        var pcAtOp = pc
         let opCode = mmu.readByte(pcAtOp)
 //        var string: String = String(format: "%4X", ops) + " " +
         var string: String = String(mmu.cartridge.romBank) + " " +
@@ -175,8 +170,12 @@ final class CPU {
     
     private func printLog() {
         print(
-            debugLog[pointer+1..<10000].joined(separator: "\n") + "\n" +
-            debugLog[0...pointer].joined(separator: "\n")
+            pcLog[(pointer+1)...]
+                .map { debugString(pc: $0.pc, sp: $0.sp) }
+                .joined(separator: "\n") + "\n" +
+                pcLog[...pointer]
+                .map { debugString(pc: $0.pc, sp: $0.sp) }
+                .joined(separator: "\n")
         )
     }
     
@@ -749,7 +748,6 @@ final class CPU {
     private func NOP() {}
     
     private func __() {
-        printLog()
         fatalError("Undefined instruction")
     }
     
@@ -1431,7 +1429,7 @@ final class CPU {
         reg.flags.C = true
     }
     
-    private func EI() {
+    private func EI() { // Todo accuracy : enable after one instruction
         enableInterrupts = true
     }
     

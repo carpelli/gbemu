@@ -41,7 +41,7 @@ final class MMU {
 //    private var cartridge = Cartridge(data: [Byte](repeating: 0, count: 0x8000))
     var cartridge = Cartridge(data: [Byte](repeating: 0, count: 0x8000))
     private var wram = [Byte](repeating: 0xFF, count: 0x2000)
-    private var zram = [Byte](repeating: 0xFF, count:   0x80)
+    private var zram = [Byte](repeating: 0xFF, count:   0x80) // TODO zram -> hram?
     var iEnable: InterruptByte = []
     var iFlag: InterruptByte = []
     
@@ -69,30 +69,27 @@ final class MMU {
             case 0xA000 ..< 0xC000: return cartridge.readRAM(address & 0x1FFF)
             
             case 0xC000 ..< 0xE000: return wram[address & 0x1FFF]
-            
             case 0xE000 ..< 0xFE00: return wram[address & 0x1FFF]
             case 0xFE00 ..< 0xFEA0: return system.gpu.oam[address & 0xFF]
             case 0xFEA0 ..< 0xFF00: return 0
             
+            case 0xFF00: return system.joypad.readByte()
+            case 0xFF01,
+                 0xFF02: return 0 // Serial not implemented
             case 0xFF03: fatalError()
-            case 0xFF04: return timer.divider
-            case 0xFF05: return timer.counter
-            case 0xFF06: return timer.modulo
-            case 0xFF07: return timer.control | 0xF8
             
-            case 0xFF10 ..< 0xFF3F: return system.apu.readByte(address)
+            case 0xFF04 ..< 0xFF08: return timer.readByte(address)
             
             case 0xFF0F: return iFlag.rawValue
             case 0xFFFF: return iEnable.rawValue
-            case 0xFF00 ..< 0xFF80:
-                if case 0xFF40 ..< 0xFF80 = addressWord {
-                    return system.gpu.readByte(addressWord)
-                } else if addressWord & 0x3F == 0 {
-                    return system.joypad.readByte()
-                } else {
-                    return 0
-                }
-            default: return zram[address & 0x7F] //Fixme
+            
+            case 0xFF10 ..< 0xFF40: return system.apu.readByte(address)
+            case 0xFF40 ..< 0xFF80: return system.gpu.readByte(address)
+            
+            case 0xFF80 ..< 0xFFFF: return zram[address & 0x7F]
+            default:
+                print("Address not implemented (read): " + String(format: "%04X", address))
+                return 0
         }
     }
     
@@ -112,33 +109,25 @@ final class MMU {
                 system.gpu.updateTile(addressWord, value: value) //TODO fix
             
             case 0xA000 ..< 0xC000: cartridge.writeRAM(address & 0x1FFF, value: value)
-                
+            
             case 0xC000 ..< 0xE000: wram[address & 0x1FFF] = value
-                
             case 0xE000 ..< 0xFE00: wram[address & 0x1FFF] = value
             case 0xFE00 ..< 0xFEA0: system.gpu.oam[address & 0xFF] = value
             case 0xFEA0 ..< 0xFF00: break
             
-            case 0xFF04: timer.divider = 0
-            case 0xFF05: timer.counter = value
-            case 0xFF06: timer.modulo = value
-            case 0xFF07: timer.control = value
+            case 0xFF00: system.joypad.writeByte(value)
+            case 0xFF01,
+                 0xFF02: break // Serial not implemented
+            case 0xFF04 ..< 0xFF08: timer.writeByte(address, value: value)
             
-            case 0xFF10 ..< 0xFF3F: return system.apu.writeByte(address, value: value)
+            case 0xFF10 ..< 0xFF40: system.apu.writeByte(address, value: value)
+            case 0xFF40 ..< 0xFF80: system.gpu.writeByte(address, value: value)
             
             case 0xFF0F: iFlag = InterruptByte(rawValue: value)
             case 0xFFFF: iEnable = InterruptByte(rawValue: value)
-            case 0xFF00 ..< 0xFF80:
-                if case 0xFF40 ..< 0xFF80 = addressWord {
-                    system.gpu.writeByte(addressWord, value: value)
-                } else if addressWord & 0x3F == 0 {
-                    return system.joypad.writeByte(value)
-                }
+            case 0xFF80 ..< 0xFFFF: zram[address & 0x7F] = value
             default:
-                if (value != 0) {
-                    
-                }
-                zram[address & 0x7F] = value //Fixme
+                print("Address not implemented (write): " + String(format: "%04X", address))
         }
     }
     
@@ -147,7 +136,6 @@ final class MMU {
         writeByte(address &+ 1, value: Byte(value >> 8)) //help
     }
     
-    var dmaCounter = 9
     //TODO Pause CPU?
     //TODO Make faster
     ///Transfer dma from XX00-XX9F to FE00-FE9F

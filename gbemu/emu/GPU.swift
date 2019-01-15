@@ -126,7 +126,7 @@ final class GPU {
         }
     }
     
-    func readByte(_ address: Word) -> Byte {
+    func readByte(_ address: Int) -> Byte {
         switch(address)
         {
             // LCD Control
@@ -165,11 +165,11 @@ final class GPU {
             case 0xFF45:
                 return lineCompare
             
-            default: return 0
+            default: return 0xFF
         }
     }
     
-    func writeByte(_ address: Word, value: Byte) {
+    func writeByte(_ address: Int, value: Byte) {
         switch(address)
         {
             // LCD Control
@@ -318,15 +318,14 @@ final class GPU {
         }
         
         if switchObj {
-            var spriteCount = 0
             let height = tallSprites ? 16 : 8
+            let objectsInLine = oam.objects
+                .filter { $0.y ..< ($0.y + height) ~= Int(line) }
+                .prefix(10)
+                .sorted { $0.x < $1.x }
+                .reversed() // As the gameboy's drawing order is the opposite from ours
             
-            for object in oam.objects.sorted(by: { $0.x < $1.x }).reversed() {
-                guard case object.y ..< object.y + height = Int(line) else { continue }
-                
-                guard spriteCount < 10 else { break }
-                spriteCount += 1
-                
+            for object in objectsInLine {
                 let bitmapOffset = Int(line) * 160 * 4
                 
                 //Flip what needs to be flipped
@@ -335,12 +334,9 @@ final class GPU {
                 
                 var tile = object.tile
                 //Fix for tall sprites
-                if tallSprites {
-                    //tile |= 0xFE
-                    if tileRowIndex > 7 {
-                        tileRowIndex -= 8
-                        tile += 1
-                    }
+                if tileRowIndex > 7 {
+                    tileRowIndex -= 8
+                    tile += 1
                 }
                 
                 var tileRow = tileset[tile][tileRowIndex]

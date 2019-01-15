@@ -14,8 +14,9 @@ struct Buffer {
     static let size = 44100
     static let idealCapacity = 1500.0
     static let alpha = 0.01
+    static let alpha2 = 0.01
     
-    private var buffer = [Int16](repeating: 0, count: size)
+    private var buffer = [Int32](repeating: 0, count: size)
     private var readPointer = 0
     private var writePointer = Int(idealCapacity) + 735*2
     private var rollingSamplesToGet = mStepsPerSample
@@ -24,18 +25,18 @@ struct Buffer {
     
     weak var apu: APU?
     
-    mutating func put(sample: Int16) {
+    mutating func put(sample: Int32) {
         buffer[writePointer % Buffer.size] = sample
         writePointer += 1
         if (writePointer - readPointer) % Buffer.size == 0 {
-            print("Buffer overflow")
+//            print("Buffer overflow")
         }
     }
     
     mutating func load(to bufferRef: AudioQueueBufferRef, size: Int) {
-        guard size == bufferRef.pointee.mAudioDataBytesCapacity / 2 else { fatalError() }
+        guard size == bufferRef.pointee.mAudioDataBytesCapacity / 4 else { fatalError() }
         let aqBuffer = UnsafeMutableBufferPointer(
-            start: bufferRef.pointee.mAudioData.assumingMemoryBound(to: Int16.self),
+            start: bufferRef.pointee.mAudioData.assumingMemoryBound(to: Int32.self),
             count: size
         )
         for i in 0..<size {
@@ -43,23 +44,30 @@ struct Buffer {
             readPointer += 1
             
             if (writePointer - readPointer) % Buffer.size == 0 {
-                print("Buffer underflow")
+//                print("Buffer underflow")
+                for j in i+1..<size {
+                    aqBuffer[j] = 0
+                }
+                break
             }
         }
-        bufferRef.pointee.mAudioDataByteSize = 735*2
+        bufferRef.pointee.mAudioDataByteSize = 735*4
         if isFirstSample {
             isFirstSample = false
         } else {
-            let capacityModifier = Double(availableSampleCount()) / Buffer.idealCapacity
-            rollingSamplesToGet =
-                Buffer.alpha * mStepsPerSample * capacityModifier +
-                (1 - Buffer.alpha) * rollingSamplesToGet
-            apu?.stepsPerSample = rollingSamplesToGet
+            apu?.stepsPerSample = calculateSampleClockLength()
         }
-//        print(availableSampleCount())
     }
     
-    func availableSampleCount() -> Int {
-        return writePointer - readPointer
+    mutating func calculateSampleClockLength() -> Double {
+        let availableSamples = writePointer - readPointer
+        let capacityModifier = Double(availableSamples) / Buffer.idealCapacity
+        rollingSamplesToGet =
+            Buffer.alpha * mStepsPerSample * capacityModifier +
+            (1 - Buffer.alpha) * rollingSamplesToGet
+        return rollingSamplesToGet
+//        let distanceInSamples = Double(availableSamples) / Buffer.idealCapacity - 1
+//        let modifier = 1 - distanceInSamples * distanceInSamples * Buffer.alpha2
+//        return modifier * mStepsPerSample
     }
 }

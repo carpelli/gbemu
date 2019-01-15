@@ -29,6 +29,7 @@ final class Cartridge {
     var ramBank = 0
     var ramOn = false
     let ramSize: Int
+    var ramIsDirty = false
     
     init(data: [Byte]) {
         rom = data
@@ -75,8 +76,10 @@ final class Cartridge {
                 switch mbc {
                     case .noMBC, .mbc1: break
                     case .mbcExternalRAM, .mbcBattery:
-                        ramOn = value & 0xA == 0xA
-                        if !ramOn { saveRAM() }
+                        ramOn = value & 0xF == 0xA
+                        if !ramOn  {
+                            ramIsDirty = true
+                        }
                 }
             case 0x2000 ..< 0x4000: //Set lower bits ROM bank
                 switch mbc {
@@ -111,7 +114,9 @@ final class Cartridge {
     }
     
     func writeRAM(_ address: Int, value: Byte) {
-        return ram[address & 0x1FFF + ramOffset] = value
+        if ramOn {
+            ram[address & 0x1FFF + ramOffset] = value
+        }
     }
     
     func saveRAM() {
@@ -123,6 +128,8 @@ final class Cartridge {
             if saveBinaryFile("gbemusav/" + name + " backup.sav", location: .documentDirectory, buffer: ram) {
                 print("Plus backup file")
             }
+        } else {
+            print("Failed to save for some reason...")
         }
     }
     

@@ -23,7 +23,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var gameboy: Gameboy!
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        window.makeFirstResponder(window)
+//        window.makeFirstResponder(window)
+//        print(window.firstResponder)
+        window.aspectRatio = NSSize(width: 160, height: 144)
     }
     
     func loadROM(url: URL) {

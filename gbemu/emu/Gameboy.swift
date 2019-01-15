@@ -28,6 +28,17 @@ extension UnsignedInteger {
     }
 }
 
+var ramSaveCounter = 0
+
+extension Byte {
+    func inBools() -> (Bool, Bool, Bool, Bool, Bool, Bool, Bool, Bool) {
+        return (
+            self & 0x01 != 0, self & 0x02 != 0, self & 0x04 != 0, self & 0x08 != 0,
+            self & 0x10 != 0, self & 0x20 != 0, self & 0x40 != 0, self & 0x80 != 0
+        )
+    }
+}
+
 final class Gameboy {
     var joypad: Joypad!
     let screen: GPUOutputReceiver
@@ -73,6 +84,12 @@ final class Gameboy {
             }
             
             count -= frameTicks
+            ramSaveCounter += 1
+            if ramSaveCounter > 60 && cpu.mmu.cartridge.ramIsDirty {
+                cpu.mmu.cartridge.saveRAM()
+                cpu.mmu.cartridge.ramIsDirty = false
+                ramSaveCounter = 0
+            }
         } else {
             inactive = true
         }

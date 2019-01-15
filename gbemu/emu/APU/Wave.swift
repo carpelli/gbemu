@@ -22,7 +22,8 @@ class Wave: Channel {
     
     override func writeByte(register: Int, value: Byte) {
         switch register {
-        case 0: break
+        case 0:
+            enabled = value.hasBit(7)
         case 1:
             timer = 256 - Int(value)
         case 2:

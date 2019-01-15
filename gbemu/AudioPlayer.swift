@@ -30,14 +30,14 @@ class AudioPlayer {
             mSampleRate: 44100,
             mFormatID: kAudioFormatLinearPCM,
             mFormatFlags: kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked, // Bigendian??
-            mBytesPerPacket: 2,
+            mBytesPerPacket: 4,
             mFramesPerPacket: 1,
-            mBytesPerFrame: 2,
-            mChannelsPerFrame: 1,
+            mBytesPerFrame: 4,
+            mChannelsPerFrame: 2,
             mBitsPerChannel: 16,
             mReserved: 0
         )
-        bufferByteSize = 735*2 // TODO better size
+        bufferByteSize = 735*4 // TODO better size
         numPacketsToRead = 0
         packetsToPlay = 1
     }
